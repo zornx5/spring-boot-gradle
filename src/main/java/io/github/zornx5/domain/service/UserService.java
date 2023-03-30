@@ -1,7 +1,7 @@
 package io.github.zornx5.domain.service;
 
 import io.github.zornx5.domain.entity.User;
-import io.github.zornx5.infrastructure.repository.UserSearch;
+import io.github.zornx5.infrastructure.repository.UserQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -73,10 +73,10 @@ public interface UserService<U, PK extends Serializable> {
     /**
      * 查找一个实体对象
      *
-     * @param search 实体搜索
+     * @param query 实体查询对象
      * @return 查找的实体对象
      */
-    Optional<User<U, PK>> findBySearch(UserSearch search);
+    Optional<User<U, PK>> findByQuery(UserQuery query);
 
     /**
      * 查找实体对象集合
@@ -89,10 +89,10 @@ public interface UserService<U, PK extends Serializable> {
     /**
      * 查找实体对象集合
      *
-     * @param search   实体搜索
-     * @param pageable 分页
+     * @param query    实体查询对象
+     * @param pageable 分页对象
      * @return 分页的实体对象集合
      */
-    Page<User<U, PK>> findAll(UserSearch search, Pageable pageable);
+    Page<User<U, PK>> findAll(UserQuery query, Pageable pageable);
 
 }

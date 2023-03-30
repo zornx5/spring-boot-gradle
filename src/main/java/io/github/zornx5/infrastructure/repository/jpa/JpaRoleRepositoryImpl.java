@@ -1,8 +1,10 @@
-package io.github.zornx5.infrastructure.repository;
+package io.github.zornx5.infrastructure.repository.jpa;
 
-import io.github.zornx5.domain.entity.JpaRole;
-import io.github.zornx5.domain.entity.JpaUser;
 import io.github.zornx5.domain.entity.Role;
+import io.github.zornx5.domain.entity.jpa.JpaRole;
+import io.github.zornx5.domain.entity.jpa.JpaUser;
+import io.github.zornx5.infrastructure.repository.RoleQuery;
+import io.github.zornx5.infrastructure.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +31,16 @@ public class JpaRoleRepositoryImpl implements RoleRepository<JpaUser, String> {
     private final JpaRoleRepositoryDelegate delegate;
 
     @Override
+    public Role<JpaUser, String> create() {
+        JpaRole role = new JpaRole();
+        role.init();
+        return role;
+    }
+
+    @Override
     public Role<JpaUser, String> create(String id) {
         JpaRole role = new JpaRole(id);
-        role.create();
+        role.init();
         return role;
     }
 
@@ -51,9 +60,9 @@ public class JpaRoleRepositoryImpl implements RoleRepository<JpaUser, String> {
     }
 
     @Override
-    public Optional<Role<JpaUser, String>> findBySearch(RoleSearch search) {
-        if (Objects.nonNull(search.getName())) {
-            return CastUtils.cast(this.delegate.findByName(search.getName()));
+    public Optional<Role<JpaUser, String>> findByQuery(RoleQuery query) {
+        if (Objects.nonNull(query.getName())) {
+            return CastUtils.cast(this.delegate.findByName(query.getName()));
         }
         return Optional.empty();
     }
@@ -64,7 +73,7 @@ public class JpaRoleRepositoryImpl implements RoleRepository<JpaUser, String> {
     }
 
     @Override
-    public Page<Role<JpaUser, String>> findAll(RoleSearch search, Pageable pageable) {
+    public Page<Role<JpaUser, String>> findAll(RoleQuery query, Pageable pageable) {
         return CastUtils.cast(delegate.findAll(pageable));
     }
 }

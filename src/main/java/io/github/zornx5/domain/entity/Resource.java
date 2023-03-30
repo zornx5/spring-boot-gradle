@@ -16,7 +16,7 @@ import java.util.Collection;
 public interface Resource<U, PK extends Serializable> extends Nameable<PK>,
         Auditable<U, PK, LocalDateTime>, DomainBuilder.ToBuilder<Resource.Builder<U, PK>> {
 
-    void create();
+    void init();
 
     ResourceType getType();
 

@@ -5,8 +5,8 @@ import io.github.zornx5.domain.event.ImmutableResourceDeletedEvent;
 import io.github.zornx5.domain.event.ImmutableResourceRegisteredEvent;
 import io.github.zornx5.domain.event.ImmutableResourceUpdatedEvent;
 import io.github.zornx5.infrastructure.common.exception.UserNotFoundException;
+import io.github.zornx5.infrastructure.repository.ResourceQuery;
 import io.github.zornx5.infrastructure.repository.ResourceRepository;
-import io.github.zornx5.infrastructure.repository.ResourceSearch;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +45,11 @@ public class ResourceServiceImpl<U, PK extends Serializable>
     @PostConstruct
     private void init() {
 
+    }
+
+    @Override
+    public Resource<U, PK> create() {
+        return null;
     }
 
     @Override
@@ -87,8 +92,8 @@ public class ResourceServiceImpl<U, PK extends Serializable>
     }
 
     @Override
-    public Optional<Resource<U, PK>> findBySearch(ResourceSearch search) {
-        return repository.findBySearch(search);
+    public Optional<Resource<U, PK>> findByQuery(ResourceQuery query) {
+        return repository.findByQuery(query);
     }
 
     @Override
@@ -97,7 +102,7 @@ public class ResourceServiceImpl<U, PK extends Serializable>
     }
 
     @Override
-    public Page<Resource<U, PK>> findAll(ResourceSearch search, Pageable pageable) {
-        return repository.findAll(search, pageable);
+    public Page<Resource<U, PK>> findAll(ResourceQuery query, Pageable pageable) {
+        return repository.findAll(query, pageable);
     }
 }

@@ -11,6 +11,27 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+/**
+ * 用户注册请求
+ *
+ * @param username    名称
+ * @param firstName   名
+ * @param lastName    姓
+ * @param avatar      头像
+ * @param description 描述
+ * @param age         年龄
+ * @param gender      性别
+ * @param email       邮件
+ * @param phone       电话
+ * @param address     地址
+ * @param status      状态
+ * @param password    密码
+ * @param expiredDate 过期时间
+ * @param roleIds     关联角色唯一标识集合
+ * @param <U>         用户
+ * @param <PK>        主键
+ * @author zornx5
+ */
 public record UserRegistrationRequest<U, PK extends Serializable>(
         @NotBlank(message = "用户名不能为空") String username,
         String description,
@@ -30,16 +51,19 @@ public record UserRegistrationRequest<U, PK extends Serializable>(
     public User<U, PK> assignTo(User<U, PK> user) {
         return user.toBuilder()
                 .name(this.username)
+                .description(this.description)
                 .firstName(this.firstName)
                 .lastName(this.lastName)
                 .avatar(this.avatar)
-                .description(this.description)
                 .age(this.age)
                 .gender(this.gender)
-                .lastName(this.email)
-                .email(this.phone)
+                .email(this.email)
+                .phone(this.phone)
                 .address(this.address)
+                .status(this.status)
                 .password(this.password)
+                .expiredTime(this.expiredDate)
+//                .roles(CollectionUtils.emptyIfNull(this.roleIds).stream().map(id->CastUtils.cast(new JpaRole(id))).collect(Collectors.toSet()))
                 .build();
     }
 }

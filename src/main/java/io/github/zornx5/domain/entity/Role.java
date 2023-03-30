@@ -18,7 +18,7 @@ public interface Role<U, PK extends Serializable> extends Nameable<PK>,
     /**
      * 创建对象初始化内容
      */
-    void create();
+    void init();
 
     Collection<Resource<U, PK>> getResources();
 

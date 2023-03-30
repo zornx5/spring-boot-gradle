@@ -1,5 +1,8 @@
-package io.github.zornx5.domain.entity;
+package io.github.zornx5.domain.entity.jpa;
 
+import io.github.zornx5.domain.entity.AbstractUser;
+import io.github.zornx5.domain.entity.Role;
+import io.github.zornx5.domain.entity.User;
 import io.github.zornx5.infrastructure.common.enums.UserGender;
 import io.github.zornx5.infrastructure.common.enums.UserStatus;
 import jakarta.persistence.CascadeType;

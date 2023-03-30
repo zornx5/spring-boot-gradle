@@ -1,9 +1,12 @@
-package io.github.zornx5.infrastructure.repository;
+package io.github.zornx5.infrastructure.repository.jpa;
 
-import io.github.zornx5.domain.entity.JpaUser;
+import io.github.zornx5.domain.entity.jpa.JpaUser;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.Optional;
 
 /**
@@ -19,5 +22,8 @@ public interface JpaUserRepositoryDelegate extends JpaRepository<JpaUser, String
     Optional<JpaUser> findByPhone(String phone);
 
     Optional<JpaUser> findByEmail(String email);
+
+    Page<JpaUser> findByNameLikeAndPhoneAndEmailAndCreatedDateBetween(String name, String phone, String email, Date createdDateStart, Date createdDateEnd, Pageable pageable);
+
 
 }

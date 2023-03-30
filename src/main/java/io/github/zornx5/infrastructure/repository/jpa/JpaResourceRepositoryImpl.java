@@ -1,8 +1,10 @@
-package io.github.zornx5.infrastructure.repository;
+package io.github.zornx5.infrastructure.repository.jpa;
 
-import io.github.zornx5.domain.entity.JpaResource;
-import io.github.zornx5.domain.entity.JpaUser;
 import io.github.zornx5.domain.entity.Resource;
+import io.github.zornx5.domain.entity.jpa.JpaResource;
+import io.github.zornx5.domain.entity.jpa.JpaUser;
+import io.github.zornx5.infrastructure.repository.ResourceQuery;
+import io.github.zornx5.infrastructure.repository.ResourceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +31,16 @@ public class JpaResourceRepositoryImpl implements ResourceRepository<JpaUser, St
     private final JpaResourceRepositoryDelegate delegate;
 
     @Override
+    public Resource<JpaUser, String> create() {
+        JpaResource resource = new JpaResource();
+        resource.init();
+        return resource;
+    }
+
+    @Override
     public Resource<JpaUser, String> create(String id) {
         JpaResource resource = new JpaResource(id);
-        resource.create();
+        resource.init();
         return resource;
     }
 
@@ -51,9 +60,9 @@ public class JpaResourceRepositoryImpl implements ResourceRepository<JpaUser, St
     }
 
     @Override
-    public Optional<Resource<JpaUser, String>> findBySearch(ResourceSearch search) {
-        if (Objects.nonNull(search.getName())) {
-            return CastUtils.cast(this.delegate.findByName(search.getName()));
+    public Optional<Resource<JpaUser, String>> findByQuery(ResourceQuery query) {
+        if (Objects.nonNull(query.getName())) {
+            return CastUtils.cast(this.delegate.findByName(query.getName()));
         }
         return Optional.empty();
     }
@@ -64,7 +73,7 @@ public class JpaResourceRepositoryImpl implements ResourceRepository<JpaUser, St
     }
 
     @Override
-    public Page<Resource<JpaUser, String>> findAll(ResourceSearch search, Pageable pageable) {
+    public Page<Resource<JpaUser, String>> findAll(ResourceQuery query, Pageable pageable) {
         return CastUtils.cast(delegate.findAll(pageable));
     }
 }

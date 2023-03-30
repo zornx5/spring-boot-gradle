@@ -19,6 +19,13 @@ public interface ResourceRepository<U, PK extends Serializable> {
     /**
      * 创建一个实体对象，仅创建
      *
+     * @return 创建的实体对象
+     */
+    Resource<U, PK> create();
+
+    /**
+     * 创建一个实体对象，仅创建
+     *
      * @param id 实体唯一标识
      * @return 创建的实体对象
      */
@@ -50,10 +57,10 @@ public interface ResourceRepository<U, PK extends Serializable> {
     /**
      * 查找一个实体对象
      *
-     * @param search 实体搜索
+     * @param query 实体查询对象
      * @return 查找的实体对象
      */
-    Optional<Resource<U, PK>> findBySearch(ResourceSearch search);
+    Optional<Resource<U, PK>> findByQuery(ResourceQuery query);
 
     /**
      * 查找实体对象集合
@@ -66,9 +73,9 @@ public interface ResourceRepository<U, PK extends Serializable> {
     /**
      * 查找实体对象集合
      *
-     * @param search   实体搜索
-     * @param pageable 分页
+     * @param query    实体查询对象
+     * @param pageable 分页对象
      * @return 分页的实体对象集合
      */
-    Page<Resource<U, PK>> findAll(ResourceSearch search, Pageable pageable);
+    Page<Resource<U, PK>> findAll(ResourceQuery query, Pageable pageable);
 }

@@ -1,6 +1,6 @@
-package io.github.zornx5.infrastructure.repository;
+package io.github.zornx5.infrastructure.repository.jpa;
 
-import io.github.zornx5.domain.entity.JpaRole;
+import io.github.zornx5.domain.entity.jpa.JpaRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

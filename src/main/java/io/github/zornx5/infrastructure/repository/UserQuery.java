@@ -5,10 +5,10 @@ package io.github.zornx5.infrastructure.repository;
  *
  * @author zornx5
  */
-public interface UserSearch {
+public interface UserQuery {
 
-    static UserSearch nameOf(String name) {
-        return new UserSearch() {
+    static UserQuery nameOf(String name) {
+        return new UserQuery() {
             @Override
             public String getName() {
                 return name;
@@ -16,8 +16,8 @@ public interface UserSearch {
         };
     }
 
-    static UserSearch phoneOf(String phone) {
-        return new UserSearch() {
+    static UserQuery phoneOf(String phone) {
+        return new UserQuery() {
             @Override
             public String getPhone() {
                 return phone;
@@ -25,8 +25,8 @@ public interface UserSearch {
         };
     }
 
-    static UserSearch emailOf(String email) {
-        return new UserSearch() {
+    static UserQuery emailOf(String email) {
+        return new UserQuery() {
             @Override
             public String getEmail() {
                 return email;

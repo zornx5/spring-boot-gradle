@@ -1,5 +1,8 @@
-package io.github.zornx5.domain.entity;
+package io.github.zornx5.domain.entity.jpa;
 
+import io.github.zornx5.domain.entity.AbstractRole;
+import io.github.zornx5.domain.entity.Resource;
+import io.github.zornx5.domain.entity.Role;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

@@ -7,12 +7,24 @@ import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 
+/**
+ * 资源注册请求
+ *
+ * @param name        名称
+ * @param description 描述
+ * @param type        类型
+ * @param permission  权限
+ * @param icon        图标
+ * @param url         网址
+ * @param <U>         用户
+ * @param <PK>        主键
+ * @author zornx5
+ */
 public record ResourceRegistrationRequest<U, PK extends Serializable>(
         @NotBlank(message = "资源名不能为空") String name,
         String description,
         @NotBlank(message = "资源类型不能为空") ResourceType type,
         @NotBlank(message = "权限不能为空") String permission,
-        String avatar,
         @NotNull(message = "图标不能为空") String icon,
         @NotNull(message = "URL 不能为空") String url
 ) {

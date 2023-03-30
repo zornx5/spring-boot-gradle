@@ -19,7 +19,7 @@ public abstract class AbstractResource<U, PK extends Serializable> extends Abstr
     private static final long serialVersionUID = 14130110092L;
 
     @Override
-    public void create() {
+    public void init() {
     }
 
     @Override

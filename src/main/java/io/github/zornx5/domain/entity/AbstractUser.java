@@ -20,7 +20,7 @@ public abstract class AbstractUser<U, PK extends Serializable> extends AbstractE
     private static final long serialVersionUID = 14130110092L;
 
     @Override
-    public void create() {
+    public void init() {
         this.setLoginFailedAttempts(0);
     }
 

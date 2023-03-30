@@ -1,5 +1,6 @@
 package io.github.zornx5.interfaces.facade;
 
+import io.github.zornx5.infrastructure.repository.ResourceQuery;
 import io.github.zornx5.interfaces.dto.ResourceRegistrationRequest;
 import io.github.zornx5.interfaces.dto.ResourceResponse;
 import io.github.zornx5.interfaces.dto.ResourceUpdateRequest;
@@ -16,17 +17,18 @@ import java.util.Optional;
  */
 public interface ResourceApi<U, PK extends Serializable> {
     /**
-     * 获取资源列表集合
+     * 分页获取资源列表集合
      *
-     * @param pageable 分页
+     * @param query    资源查询对象
+     * @param pageable 分页对象
      * @return 符合条件的资源列表集合
      */
-    Page<ResourceResponse<U, PK>> list(Pageable pageable);
+    Page<ResourceResponse<U, PK>> page(ResourceQuery query, Pageable pageable);
 
     /**
      * 获取资源
      *
-     * @param id 唯一标识
+     * @param id 资源唯一标识
      * @return 符合条件的资源
      */
     Optional<ResourceResponse<U, PK>> get(String id);
@@ -34,7 +36,7 @@ public interface ResourceApi<U, PK extends Serializable> {
     /**
      * 注册资源
      *
-     * @param request 注册请求
+     * @param request 资源注册请求
      * @return 注册的资源
      */
     ResourceResponse<U, PK> register(ResourceRegistrationRequest<U, PK> request);
@@ -50,7 +52,7 @@ public interface ResourceApi<U, PK extends Serializable> {
     /**
      * 删除资源
      *
-     * @param id 唯一标识
+     * @param id 资源唯一标识
      * @return 是否删除
      */
     Void delete(String id);

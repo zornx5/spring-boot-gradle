@@ -6,6 +6,20 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+/**
+ * 角色响应
+ *
+ * @param id               唯一标识
+ * @param name             名称
+ * @param description      描述
+ * @param createdBy        创建人
+ * @param createdDate      创建日期
+ * @param lastModifiedBy   最后修改人
+ * @param lastModifiedDate 最后修改日期
+ * @param <U>              用户
+ * @param <PK>             主键
+ * @author zornx5
+ */
 public record RoleResponse<U, PK extends Serializable>(
         PK id,
         String name,
@@ -25,5 +39,9 @@ public record RoleResponse<U, PK extends Serializable>(
                 role.getLastModifiedBy(),
                 role.getLastModifiedDate()
         );
+    }
+
+    public static <U, PK extends Serializable> Optional<RoleResponse<U, PK>> of(Optional<Role<U, PK>> resource) {
+        return resource.map(RoleResponse::of);
     }
 }

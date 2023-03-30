@@ -5,8 +5,8 @@ import io.github.zornx5.domain.event.ImmutableUserDeletedEvent;
 import io.github.zornx5.domain.event.ImmutableUserRegisteredEvent;
 import io.github.zornx5.domain.event.ImmutableUserUpdatedEvent;
 import io.github.zornx5.infrastructure.common.exception.UserNotFoundException;
+import io.github.zornx5.infrastructure.repository.UserQuery;
 import io.github.zornx5.infrastructure.repository.UserRepository;
-import io.github.zornx5.infrastructure.repository.UserSearch;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,8 +85,8 @@ public class UserServiceImpl<U, PK extends Serializable>
     }
 
     @Override
-    public Optional<User<U, PK>> findBySearch(UserSearch search) {
-        return repository.findBySearch(search);
+    public Optional<User<U, PK>> findByQuery(UserQuery query) {
+        return repository.findByQuery(query);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class UserServiceImpl<U, PK extends Serializable>
     }
 
     @Override
-    public Page<User<U, PK>> findAll(UserSearch search, Pageable pageable) {
-        return repository.findAll(search, pageable);
+    public Page<User<U, PK>> findAll(UserQuery query, Pageable pageable) {
+        return repository.findAll(query, pageable);
     }
 }

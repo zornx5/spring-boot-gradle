@@ -20,7 +20,7 @@ public interface User<U, PK extends Serializable> extends Expirable<PK, LocalDat
     /**
      * 创建对象初始化内容
      */
-    void create();
+    void init();
 
     String getFirstName();
 

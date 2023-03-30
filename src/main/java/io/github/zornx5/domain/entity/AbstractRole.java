@@ -17,7 +17,7 @@ public abstract class AbstractRole<U, PK extends Serializable> extends AbstractN
     private static final long serialVersionUID = 14130110092L;
 
     @Override
-    public void create() {
+    public void init() {
     }
 
     @Override

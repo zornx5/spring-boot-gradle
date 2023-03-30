@@ -1,14 +1,14 @@
 package io.github.zornx5.infrastructure.repository;
 
 /**
- * 资源搜素
+ * 角色搜素
  *
  * @author zornx5
  */
-public interface ResourceSearch {
+public interface RoleQuery {
 
-    static ResourceSearch nameOf(String name) {
-        return new ResourceSearch() {
+    static RoleQuery nameOf(String name) {
+        return new RoleQuery() {
             @Override
             public String getName() {
                 return name;

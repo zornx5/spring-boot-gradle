@@ -1,5 +1,7 @@
-package io.github.zornx5.domain.entity;
+package io.github.zornx5.domain.entity.jpa;
 
+import io.github.zornx5.domain.entity.AbstractResource;
+import io.github.zornx5.domain.entity.Resource;
 import io.github.zornx5.infrastructure.common.enums.ResourceType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;

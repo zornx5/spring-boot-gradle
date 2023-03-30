@@ -1,5 +1,6 @@
 package io.github.zornx5.interfaces.facade;
 
+import io.github.zornx5.infrastructure.repository.RoleQuery;
 import io.github.zornx5.interfaces.dto.RoleRegistrationRequest;
 import io.github.zornx5.interfaces.dto.RoleResponse;
 import io.github.zornx5.interfaces.dto.RoleUpdateRequest;
@@ -16,17 +17,18 @@ import java.util.Optional;
  */
 public interface RoleApi<U, PK extends Serializable> {
     /**
-     * 获取角色列表集合
+     * 分页获取角色列表集合
      *
-     * @param pageable 分页
+     * @param query    角色查询对象
+     * @param pageable 分页对象
      * @return 符合条件的角色列表集合
      */
-    Page<RoleResponse<U, PK>> list(Pageable pageable);
+    Page<RoleResponse<U, PK>> page(RoleQuery query, Pageable pageable);
 
     /**
      * 获取角色
      *
-     * @param id 唯一标识
+     * @param id 角色唯一标识
      * @return 符合条件的角色
      */
     Optional<RoleResponse<U, PK>> get(String id);
@@ -34,7 +36,7 @@ public interface RoleApi<U, PK extends Serializable> {
     /**
      * 注册角色
      *
-     * @param request 注册请求
+     * @param request 角色注册请求
      * @return 注册的角色
      */
     RoleResponse<U, PK> register(RoleRegistrationRequest<U, PK> request);
@@ -50,7 +52,7 @@ public interface RoleApi<U, PK extends Serializable> {
     /**
      * 删除角色
      *
-     * @param id 唯一标识
+     * @param id 角色唯一标识
      * @return 是否删除
      */
     Void delete(String id);

@@ -1,4 +1,4 @@
-package io.github.zornx5.infrastructure.handler;
+package io.github.zornx5.interfaces.facade.rest;
 
 import io.github.zornx5.infrastructure.common.Content;
 import io.github.zornx5.infrastructure.common.enums.ResponseStatus;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @ResponseBody
 @RestControllerAdvice
 @Slf4j
-public class GlobalExceptionHandler {
+public class ExceptionResourceAdvice {
 
     /**
      * 处理方法参数无效异常

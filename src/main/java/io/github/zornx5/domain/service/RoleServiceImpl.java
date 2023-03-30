@@ -5,8 +5,8 @@ import io.github.zornx5.domain.event.ImmutableRoleDeletedEvent;
 import io.github.zornx5.domain.event.ImmutableRoleRegisteredEvent;
 import io.github.zornx5.domain.event.ImmutableRoleUpdatedEvent;
 import io.github.zornx5.infrastructure.common.exception.UserNotFoundException;
+import io.github.zornx5.infrastructure.repository.RoleQuery;
 import io.github.zornx5.infrastructure.repository.RoleRepository;
-import io.github.zornx5.infrastructure.repository.RoleSearch;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +45,11 @@ public class RoleServiceImpl<U, PK extends Serializable>
     @PostConstruct
     private void init() {
 
+    }
+
+    @Override
+    public Role<U, PK> create() {
+        return null;
     }
 
     @Override
@@ -87,8 +92,8 @@ public class RoleServiceImpl<U, PK extends Serializable>
     }
 
     @Override
-    public Optional<Role<U, PK>> findBySearch(RoleSearch search) {
-        return repository.findBySearch(search);
+    public Optional<Role<U, PK>> findByQuery(RoleQuery query) {
+        return repository.findByQuery(query);
     }
 
     @Override
@@ -97,7 +102,7 @@ public class RoleServiceImpl<U, PK extends Serializable>
     }
 
     @Override
-    public Page<Role<U, PK>> findAll(RoleSearch search, Pageable pageable) {
-        return repository.findAll(search, pageable);
+    public Page<Role<U, PK>> findAll(RoleQuery query, Pageable pageable) {
+        return repository.findAll(query, pageable);
     }
 }

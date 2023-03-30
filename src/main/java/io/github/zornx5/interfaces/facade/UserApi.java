@@ -1,5 +1,7 @@
 package io.github.zornx5.interfaces.facade;
 
+import io.github.zornx5.infrastructure.repository.UserQuery;
+import io.github.zornx5.interfaces.dto.UserChangePasswordRequest;
 import io.github.zornx5.interfaces.dto.UserRegistrationRequest;
 import io.github.zornx5.interfaces.dto.UserResponse;
 import io.github.zornx5.interfaces.dto.UserUpdateRequest;
@@ -16,17 +18,18 @@ import java.util.Optional;
  */
 public interface UserApi<U, PK extends Serializable> {
     /**
-     * 获取用户列表集合
+     * 分页获取用户列表集合
      *
-     * @param pageable 分页
+     * @param query    用户查询对象
+     * @param pageable 分页对象
      * @return 符合条件的用户列表集合
      */
-    Page<UserResponse<U, PK>> list(Pageable pageable);
+    Page<UserResponse<U, PK>> page(UserQuery query, Pageable pageable);
 
     /**
      * 获取用户
      *
-     * @param id 唯一标识
+     * @param id 用户唯一标识
      * @return 符合条件的用户
      */
     Optional<UserResponse<U, PK>> get(String id);
@@ -34,18 +37,10 @@ public interface UserApi<U, PK extends Serializable> {
     /**
      * 注册用户
      *
-     * @param request 注册请求
+     * @param request 用户注册请求
      * @return 注册的用户
      */
     UserResponse<U, PK> register(UserRegistrationRequest<U, PK> request);
-
-    /**
-     * 修改当前用户密码
-     *
-     * @param password 密码
-     * @return 修改后的密码
-     */
-    String changePassword(String password);
 
     /**
      * 更新用户
@@ -58,8 +53,16 @@ public interface UserApi<U, PK extends Serializable> {
     /**
      * 删除用户
      *
-     * @param id 唯一标识
+     * @param id 用户唯一标识
      * @return 是否删除
      */
     Void delete(String id);
+
+    /**
+     * 修改当前用户密码
+     *
+     * @param request 修改用户密码请求
+     * @return 修改后的密码
+     */
+    String changePassword(UserChangePasswordRequest request);
 }

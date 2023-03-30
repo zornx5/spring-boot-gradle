@@ -1,7 +1,9 @@
-package io.github.zornx5.infrastructure.repository;
+package io.github.zornx5.infrastructure.repository.jpa;
 
-import io.github.zornx5.domain.entity.JpaUser;
 import io.github.zornx5.domain.entity.User;
+import io.github.zornx5.domain.entity.jpa.JpaUser;
+import io.github.zornx5.infrastructure.repository.UserQuery;
+import io.github.zornx5.infrastructure.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +32,14 @@ public class JpaUserRepositoryImpl implements UserRepository<JpaUser, String> {
     @Override
     public User<JpaUser, String> create() {
         JpaUser user = new JpaUser();
-        user.create();
+        user.init();
         return user;
     }
 
     @Override
     public User<JpaUser, String> create(String id) {
         JpaUser user = new JpaUser(id);
-        user.create();
+        user.init();
         return user;
     }
 
@@ -57,13 +59,13 @@ public class JpaUserRepositoryImpl implements UserRepository<JpaUser, String> {
     }
 
     @Override
-    public Optional<User<JpaUser, String>> findBySearch(UserSearch search) {
-        if (Objects.nonNull(search.getName())) {
-            return CastUtils.cast(this.delegate.findByName(search.getName()));
-        } else if (Objects.nonNull(search.getPhone())) {
-            return CastUtils.cast(this.delegate.findByPhone(search.getPhone()));
-        } else if (Objects.nonNull(search.getEmail())) {
-            return CastUtils.cast(this.delegate.findByEmail(search.getEmail()));
+    public Optional<User<JpaUser, String>> findByQuery(UserQuery query) {
+        if (Objects.nonNull(query.getName())) {
+            return CastUtils.cast(this.delegate.findByName(query.getName()));
+        } else if (Objects.nonNull(query.getPhone())) {
+            return CastUtils.cast(this.delegate.findByPhone(query.getPhone()));
+        } else if (Objects.nonNull(query.getEmail())) {
+            return CastUtils.cast(this.delegate.findByEmail(query.getEmail()));
         }
         return Optional.empty();
     }
@@ -74,7 +76,7 @@ public class JpaUserRepositoryImpl implements UserRepository<JpaUser, String> {
     }
 
     @Override
-    public Page<User<JpaUser, String>> findAll(UserSearch search, Pageable pageable) {
+    public Page<User<JpaUser, String>> findAll(UserQuery query, Pageable pageable) {
         return CastUtils.cast(delegate.findAll(pageable));
     }
 }

@@ -1,14 +1,16 @@
 package io.github.zornx5.infrastructure.repository;
 
+import javax.annotation.Nullable;
+
 /**
- * 角色搜素
+ * 资源搜素
  *
  * @author zornx5
  */
-public interface RoleSearch {
+public interface ResourceQuery {
 
-    static RoleSearch nameOf(String name) {
-        return new RoleSearch() {
+    static ResourceQuery nameOf(String name) {
+        return new ResourceQuery() {
             @Override
             public String getName() {
                 return name;
@@ -16,6 +18,7 @@ public interface RoleSearch {
         };
     }
 
+    @Nullable
     default String getName() {
         return null;
     }
