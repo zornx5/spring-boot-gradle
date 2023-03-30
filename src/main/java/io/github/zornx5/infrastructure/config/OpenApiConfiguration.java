@@ -28,10 +28,10 @@ import org.springframework.context.annotation.Configuration;
                 scheme = "bearer"
         )
 })
-public class SpringdocConfiguration {
+public class OpenApiConfiguration {
 
     @Bean
-    public OpenAPI baseApplicationInfo() {
+    public OpenAPI openApiInfo() {
         return new OpenAPI()
                 .info(new Info()
                         .title("ZornX5 的 Spring Boot 模版项目")
