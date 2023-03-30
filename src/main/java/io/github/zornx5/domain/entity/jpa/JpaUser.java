@@ -32,8 +32,10 @@ import java.util.Collection;
 @Setter
 @Table(name = "t_users")
 @ToString
-public class JpaUser extends AbstractUser<JpaUser, String> {
+public class JpaUser extends AbstractUser<JpaUser, Long> {
+
     private static final long serialVersionUID = 14130110092L;
+
     private String firstName;
 
     private String lastName;
@@ -68,13 +70,13 @@ public class JpaUser extends AbstractUser<JpaUser, String> {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     @ToString.Exclude
-    private Collection<Role<JpaUser, String>> roles;
+    private Collection<Role<JpaUser, Long>> roles;
 
-    public JpaUser(String id) {
+    public JpaUser(Long id) {
         this.setId(id);
     }
 
-    public static JpaUser of(User<JpaUser, String> user) {
+    public static JpaUser of(User<JpaUser, Long> user) {
         if (user instanceof JpaUser) {
             return (JpaUser) (user);
         }

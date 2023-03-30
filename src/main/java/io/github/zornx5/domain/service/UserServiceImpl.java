@@ -46,7 +46,7 @@ public class UserServiceImpl<U, PK extends Serializable>
     }
 
     @Override
-    public User<U, PK> create(String id) {
+    public User<U, PK> create(PK id) {
         return repository.create(id);
     }
 
@@ -64,7 +64,7 @@ public class UserServiceImpl<U, PK extends Serializable>
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(PK id) {
         Optional<User<U, PK>> user = repository.findById(id);
         if (user.isEmpty()) {
             throw new UserNotFoundException();
@@ -80,7 +80,7 @@ public class UserServiceImpl<U, PK extends Serializable>
     }
 
     @Override
-    public Optional<User<U, PK>> findById(String id) {
+    public Optional<User<U, PK>> findById(PK id) {
         return repository.findById(id);
     }
 
@@ -90,7 +90,7 @@ public class UserServiceImpl<U, PK extends Serializable>
     }
 
     @Override
-    public List<User<U, PK>> findAllById(Collection<String> ids) {
+    public List<User<U, PK>> findAllById(Collection<PK> ids) {
         return repository.findAllById(ids);
     }
 

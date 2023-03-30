@@ -29,7 +29,7 @@ import java.util.Collection;
 @Entity
 @Table(name = "t_resources")
 @ToString
-public class JpaResource extends AbstractResource<JpaUser, String> {
+public class JpaResource extends AbstractResource<JpaUser, Long> {
     private static final long serialVersionUID = 14130110092L;
 
     private ResourceType type;
@@ -45,13 +45,13 @@ public class JpaResource extends AbstractResource<JpaUser, String> {
             joinColumns = @JoinColumn(name = "resource_id "),
             inverseJoinColumns = @JoinColumn(name = "children_resource_id"))
     @ToString.Exclude
-    private Collection<Resource<JpaUser, String>> children;
+    private Collection<Resource<JpaUser, Long>> children;
 
-    public JpaResource(String id) {
+    public JpaResource(Long id) {
         this.setId(id);
     }
 
-    public static JpaResource of(Resource<JpaUser, String> resource) {
+    public static JpaResource of(Resource<JpaUser, Long> resource) {
         if (resource instanceof JpaResource) {
             return (JpaResource) (resource);
         }

@@ -10,7 +10,7 @@ import java.util.Optional;
  *
  * @author zornx5
  */
-public interface JpaResourceRepositoryDelegate extends JpaRepository<JpaResource, String> {
+public interface JpaResourceRepositoryDelegate extends JpaRepository<JpaResource, Long> {
 
     Optional<JpaResource> findByName(String name);
 }

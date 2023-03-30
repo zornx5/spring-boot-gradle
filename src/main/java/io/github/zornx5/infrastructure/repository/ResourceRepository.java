@@ -29,7 +29,7 @@ public interface ResourceRepository<U, PK extends Serializable> {
      * @param id 实体唯一标识
      * @return 创建的实体对象
      */
-    Resource<U, PK> create(String id);
+    Resource<U, PK> create(PK id);
 
     /**
      * 存储一个实体对象
@@ -52,7 +52,7 @@ public interface ResourceRepository<U, PK extends Serializable> {
      * @param id 实体唯一标识
      * @return 存储的实体对象
      */
-    Optional<Resource<U, PK>> findById(String id);
+    Optional<Resource<U, PK>> findById(PK id);
 
     /**
      * 查找一个实体对象
@@ -68,7 +68,7 @@ public interface ResourceRepository<U, PK extends Serializable> {
      * @param ids 实体唯一标识集合
      * @return 存储的实体对象集合
      */
-    List<Resource<U, PK>> findAllById(Collection<String> ids);
+    List<Resource<U, PK>> findAllById(Collection<PK> ids);
 
     /**
      * 查找实体对象集合

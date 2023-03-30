@@ -53,7 +53,7 @@ public class RoleServiceImpl<U, PK extends Serializable>
     }
 
     @Override
-    public Role<U, PK> create(String id) {
+    public Role<U, PK> create(PK id) {
         return repository.create(id);
     }
 
@@ -71,7 +71,7 @@ public class RoleServiceImpl<U, PK extends Serializable>
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(PK id) {
         Optional<Role<U, PK>> role = repository.findById(id);
         if (role.isEmpty()) {
             throw new UserNotFoundException();
@@ -87,7 +87,7 @@ public class RoleServiceImpl<U, PK extends Serializable>
     }
 
     @Override
-    public Optional<Role<U, PK>> findById(String id) {
+    public Optional<Role<U, PK>> findById(PK id) {
         return repository.findById(id);
     }
 
@@ -97,7 +97,7 @@ public class RoleServiceImpl<U, PK extends Serializable>
     }
 
     @Override
-    public List<Role<U, PK>> findAllById(Collection<String> ids) {
+    public List<Role<U, PK>> findAllById(Collection<PK> ids) {
         return repository.findAllById(ids);
     }
 

@@ -26,41 +26,41 @@ import java.util.Optional;
 @Repository
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 @Slf4j
-public class JpaResourceRepositoryImpl implements ResourceRepository<JpaUser, String> {
+public class JpaResourceRepositoryImpl implements ResourceRepository<JpaUser, Long> {
 
     private final JpaResourceRepositoryDelegate delegate;
 
     @Override
-    public Resource<JpaUser, String> create() {
+    public Resource<JpaUser, Long> create() {
         JpaResource resource = new JpaResource();
         resource.init();
         return resource;
     }
 
     @Override
-    public Resource<JpaUser, String> create(String id) {
+    public Resource<JpaUser, Long> create(Long id) {
         JpaResource resource = new JpaResource(id);
         resource.init();
         return resource;
     }
 
     @Override
-    public Resource<JpaUser, String> save(Resource<JpaUser, String> resource) {
+    public Resource<JpaUser, Long> save(Resource<JpaUser, Long> resource) {
         return this.delegate.save(JpaResource.of(resource));
     }
 
     @Override
-    public void delete(Resource<JpaUser, String> resource) {
+    public void delete(Resource<JpaUser, Long> resource) {
         this.delegate.delete(JpaResource.of(resource));
     }
 
     @Override
-    public Optional<Resource<JpaUser, String>> findById(String id) {
+    public Optional<Resource<JpaUser, Long>> findById(Long id) {
         return CastUtils.cast(this.delegate.findById(id));
     }
 
     @Override
-    public Optional<Resource<JpaUser, String>> findByQuery(ResourceQuery query) {
+    public Optional<Resource<JpaUser, Long>> findByQuery(ResourceQuery query) {
         if (Objects.nonNull(query.getName())) {
             return CastUtils.cast(this.delegate.findByName(query.getName()));
         }
@@ -68,12 +68,12 @@ public class JpaResourceRepositoryImpl implements ResourceRepository<JpaUser, St
     }
 
     @Override
-    public List<Resource<JpaUser, String>> findAllById(Collection<String> ids) {
+    public List<Resource<JpaUser, Long>> findAllById(Collection<Long> ids) {
         return CastUtils.cast(delegate.findAllById(ids));
     }
 
     @Override
-    public Page<Resource<JpaUser, String>> findAll(ResourceQuery query, Pageable pageable) {
+    public Page<Resource<JpaUser, Long>> findAll(ResourceQuery query, Pageable pageable) {
         return CastUtils.cast(delegate.findAll(pageable));
     }
 }

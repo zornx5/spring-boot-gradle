@@ -32,7 +32,7 @@ public interface UserApi<U, PK extends Serializable> {
      * @param id 用户唯一标识
      * @return 符合条件的用户
      */
-    Optional<UserResponse<U, PK>> get(String id);
+    Optional<UserResponse<U, PK>> get(PK id);
 
     /**
      * 注册用户
@@ -48,7 +48,7 @@ public interface UserApi<U, PK extends Serializable> {
      * @param request 更新用户请求
      * @return 更新后的数据
      */
-    UserResponse<U, PK> update(String id, UserUpdateRequest<U, PK> request);
+    UserResponse<U, PK> update(PK id, UserUpdateRequest<U, PK> request);
 
     /**
      * 删除用户
@@ -56,7 +56,7 @@ public interface UserApi<U, PK extends Serializable> {
      * @param id 用户唯一标识
      * @return 是否删除
      */
-    Void delete(String id);
+    Void delete(PK id);
 
     /**
      * 修改当前用户密码

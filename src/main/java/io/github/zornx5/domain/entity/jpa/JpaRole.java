@@ -29,7 +29,7 @@ import java.util.Collection;
 @Setter
 @Table(name = "t_roles")
 @ToString
-public class JpaRole extends AbstractRole<JpaUser, String> {
+public class JpaRole extends AbstractRole<JpaUser, Long> {
     private static final long serialVersionUID = 14130110092L;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH, targetEntity = JpaRole.class)
@@ -37,13 +37,13 @@ public class JpaRole extends AbstractRole<JpaUser, String> {
             joinColumns = @JoinColumn(name = "role_id "),
             inverseJoinColumns = @JoinColumn(name = "resource_id"))
     @ToString.Exclude
-    private Collection<Resource<JpaUser, String>> resources;
+    private Collection<Resource<JpaUser, Long>> resources;
 
-    public JpaRole(String id) {
+    public JpaRole(Long id) {
         this.setId(id);
     }
 
-    public static JpaRole of(Role<JpaUser, String> role) {
+    public static JpaRole of(Role<JpaUser, Long> role) {
         if (role instanceof JpaRole) {
             return (JpaRole) (role);
         }

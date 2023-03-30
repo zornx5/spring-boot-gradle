@@ -31,7 +31,7 @@ public interface RoleApi<U, PK extends Serializable> {
      * @param id 角色唯一标识
      * @return 符合条件的角色
      */
-    Optional<RoleResponse<U, PK>> get(String id);
+    Optional<RoleResponse<U, PK>> get(PK id);
 
     /**
      * 注册角色
@@ -47,7 +47,7 @@ public interface RoleApi<U, PK extends Serializable> {
      * @param request 更新角色请求
      * @return 更新后的数据
      */
-    RoleResponse<U, PK> update(String id, RoleUpdateRequest<U, PK> request);
+    RoleResponse<U, PK> update(PK id, RoleUpdateRequest<U, PK> request);
 
     /**
      * 删除角色
@@ -55,5 +55,5 @@ public interface RoleApi<U, PK extends Serializable> {
      * @param id 角色唯一标识
      * @return 是否删除
      */
-    Void delete(String id);
+    Void delete(PK id);
 }

@@ -26,41 +26,41 @@ import java.util.Optional;
 @Repository
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 @Slf4j
-public class JpaRoleRepositoryImpl implements RoleRepository<JpaUser, String> {
+public class JpaRoleRepositoryImpl implements RoleRepository<JpaUser, Long> {
 
     private final JpaRoleRepositoryDelegate delegate;
 
     @Override
-    public Role<JpaUser, String> create() {
+    public Role<JpaUser, Long> create() {
         JpaRole role = new JpaRole();
         role.init();
         return role;
     }
 
     @Override
-    public Role<JpaUser, String> create(String id) {
+    public Role<JpaUser, Long> create(Long id) {
         JpaRole role = new JpaRole(id);
         role.init();
         return role;
     }
 
     @Override
-    public Role<JpaUser, String> save(Role<JpaUser, String> role) {
+    public Role<JpaUser, Long> save(Role<JpaUser, Long> role) {
         return this.delegate.save(JpaRole.of(role));
     }
 
     @Override
-    public void delete(Role<JpaUser, String> role) {
+    public void delete(Role<JpaUser, Long> role) {
         this.delegate.delete(JpaRole.of(role));
     }
 
     @Override
-    public Optional<Role<JpaUser, String>> findById(String id) {
+    public Optional<Role<JpaUser, Long>> findById(Long id) {
         return CastUtils.cast(this.delegate.findById(id));
     }
 
     @Override
-    public Optional<Role<JpaUser, String>> findByQuery(RoleQuery query) {
+    public Optional<Role<JpaUser, Long>> findByQuery(RoleQuery query) {
         if (Objects.nonNull(query.getName())) {
             return CastUtils.cast(this.delegate.findByName(query.getName()));
         }
@@ -68,12 +68,12 @@ public class JpaRoleRepositoryImpl implements RoleRepository<JpaUser, String> {
     }
 
     @Override
-    public List<Role<JpaUser, String>> findAllById(Collection<String> ids) {
+    public List<Role<JpaUser, Long>> findAllById(Collection<Long> ids) {
         return CastUtils.cast(delegate.findAllById(ids));
     }
 
     @Override
-    public Page<Role<JpaUser, String>> findAll(RoleQuery query, Pageable pageable) {
+    public Page<Role<JpaUser, Long>> findAll(RoleQuery query, Pageable pageable) {
         return CastUtils.cast(delegate.findAll(pageable));
     }
 }

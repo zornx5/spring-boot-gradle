@@ -53,7 +53,7 @@ public class ResourceServiceImpl<U, PK extends Serializable>
     }
 
     @Override
-    public Resource<U, PK> create(String id) {
+    public Resource<U, PK> create(PK id) {
         return repository.create(id);
     }
 
@@ -71,7 +71,7 @@ public class ResourceServiceImpl<U, PK extends Serializable>
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(PK id) {
         Optional<Resource<U, PK>> resource = repository.findById(id);
         if (resource.isEmpty()) {
             throw new UserNotFoundException();
@@ -87,7 +87,7 @@ public class ResourceServiceImpl<U, PK extends Serializable>
     }
 
     @Override
-    public Optional<Resource<U, PK>> findById(String id) {
+    public Optional<Resource<U, PK>> findById(PK id) {
         return repository.findById(id);
     }
 
@@ -97,7 +97,7 @@ public class ResourceServiceImpl<U, PK extends Serializable>
     }
 
     @Override
-    public List<Resource<U, PK>> findAllById(Collection<String> ids) {
+    public List<Resource<U, PK>> findAllById(Collection<PK> ids) {
         return repository.findAllById(ids);
     }
 

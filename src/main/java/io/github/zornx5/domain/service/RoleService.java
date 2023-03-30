@@ -29,7 +29,7 @@ public interface RoleService<U, PK extends Serializable> {
      * @param id 实体唯一标识
      * @return 创建的实体对象
      */
-    Role<U, PK> create(String id);
+    Role<U, PK> create(PK id);
 
     /**
      * 存储一个实体对象
@@ -51,7 +51,7 @@ public interface RoleService<U, PK extends Serializable> {
      *
      * @param id 实体唯一标识
      */
-    void delete(String id);
+    void delete(PK id);
 
     /**
      * 更新一个实体对象
@@ -67,7 +67,7 @@ public interface RoleService<U, PK extends Serializable> {
      * @param id 实体唯一标识
      * @return 存储的实体对象
      */
-    Optional<Role<U, PK>> findById(String id);
+    Optional<Role<U, PK>> findById(PK id);
 
     /**
      * 查找一个实体对象
@@ -83,7 +83,7 @@ public interface RoleService<U, PK extends Serializable> {
      * @param ids 实体唯一标识集合
      * @return 存储的实体对象集合
      */
-    List<Role<U, PK>> findAllById(Collection<String> ids);
+    List<Role<U, PK>> findAllById(Collection<PK> ids);
 
     /**
      * 查找实体对象集合
