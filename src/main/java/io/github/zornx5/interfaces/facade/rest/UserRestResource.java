@@ -8,7 +8,6 @@ import io.github.zornx5.interfaces.dto.UserResponse;
 import io.github.zornx5.interfaces.dto.UserUpdateRequest;
 import io.github.zornx5.interfaces.facade.UserApi;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +61,7 @@ public class UserRestResource<U, PK extends Serializable> implements UserApi<U, 
 
     @Override
     @PatchMapping("/password")
-    public String changePassword(@RequestBody @NotBlank String password) {
+    public String changePassword(@RequestBody String password) {
         return null;
     }
 
