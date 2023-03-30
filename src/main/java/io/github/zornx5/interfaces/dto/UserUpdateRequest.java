@@ -3,14 +3,12 @@ package io.github.zornx5.interfaces.dto;
 import io.github.zornx5.domain.entity.User;
 import io.github.zornx5.infrastructure.common.enums.UserGender;
 import io.github.zornx5.infrastructure.common.enums.UserStatus;
-import io.github.zornx5.infrastructure.common.exception.UserNotFoundException;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.Set;
 
 public record UserUpdateRequest<U, PK extends Serializable>(
@@ -41,12 +39,5 @@ public record UserUpdateRequest<U, PK extends Serializable>(
                 .status(this.status)
                 .expiredTime(this.expiredDate)
                 .build();
-    }
-
-    public User<U, PK> assignTo(Optional<User<U, PK>> user) {
-        if (user.isEmpty()) {
-            throw new UserNotFoundException();
-        }
-        return this.assignTo(user.get());
     }
 }

@@ -1,6 +1,7 @@
 package io.github.zornx5.interfaces.facade.rest;
 
 import io.github.zornx5.domain.service.ResourceService;
+import io.github.zornx5.infrastructure.common.exception.ResourceNotFoundException;
 import io.github.zornx5.infrastructure.repository.ResourceQuery;
 import io.github.zornx5.interfaces.assembler.ResourceResponseAssembler;
 import io.github.zornx5.interfaces.dto.ResourceRegistrationRequest;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -53,7 +55,7 @@ public class ResourceRestResource<U, PK extends Serializable> implements Resourc
     @Override
     @GetMapping("/{id}")
     public Optional<ResourceResponse<U, PK>> get(@PathVariable String id) {
-        return ResourceResponse.of(resourceService.findById(id));
+        return resourceService.findById(id).map(ResourceResponse::of);
     }
 
     @Override
@@ -66,7 +68,11 @@ public class ResourceRestResource<U, PK extends Serializable> implements Resourc
     @PatchMapping("/{id}")
     public ResourceResponse<U, PK> update(@PathVariable String id,
                                           @RequestBody @Valid ResourceUpdateRequest<U, PK> request) {
-        return ResourceResponse.of(resourceService.update(request.assignTo(resourceService.findById(id))));
+        val resource = resourceService.findById(id);
+        if (resource.isEmpty()) {
+            throw new ResourceNotFoundException();
+        }
+        return ResourceResponse.of(resourceService.update(request.assignTo(resource.get())));
     }
 
     @Override

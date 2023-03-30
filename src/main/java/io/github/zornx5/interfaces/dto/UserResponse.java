@@ -74,8 +74,4 @@ public record UserResponse<U, PK extends Serializable>(
                 user.getExpiredDate()
         );
     }
-
-    public static <U, PK extends Serializable> Optional<UserResponse<U, PK>> of(Optional<User<U, PK>> resource) {
-        return resource.map(UserResponse::of);
-    }
 }

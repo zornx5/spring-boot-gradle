@@ -53,8 +53,4 @@ public record ResourceResponse<U, PK extends Serializable>(
                 resource.getLastModifiedDate()
         );
     }
-
-    public static <U, PK extends Serializable> Optional<ResourceResponse<U, PK>> of(Optional<Resource<U, PK>> resource) {
-        return resource.map(ResourceResponse::of);
-    }
 }

@@ -1,6 +1,7 @@
 package io.github.zornx5.interfaces.facade.rest;
 
 import io.github.zornx5.domain.service.UserService;
+import io.github.zornx5.infrastructure.common.exception.UserNotFoundException;
 import io.github.zornx5.infrastructure.repository.UserQuery;
 import io.github.zornx5.interfaces.assembler.UserResponseAssembler;
 import io.github.zornx5.interfaces.dto.UserChangePasswordRequest;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -54,7 +56,7 @@ public class UserRestResource<U, PK extends Serializable> implements UserApi<U, 
     @Override
     @GetMapping("/{id}")
     public Optional<UserResponse<U, PK>> get(@PathVariable String id) {
-        return UserResponse.of(userService.findById(id));
+        return userService.findById(id).map(UserResponse::of);
     }
 
     @Override
@@ -68,7 +70,11 @@ public class UserRestResource<U, PK extends Serializable> implements UserApi<U, 
     @PatchMapping("/{id}")
     public UserResponse<U, PK> update(@PathVariable String id,
                                       @RequestBody @Valid UserUpdateRequest<U, PK> request) {
-        return UserResponse.of(userService.update(request.assignTo(userService.findById(id))));
+        val user = userService.findById(id);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException();
+        }
+        return UserResponse.of(userService.update(request.assignTo(user.get())));
     }
 
     @Override

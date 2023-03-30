@@ -2,11 +2,9 @@ package io.github.zornx5.interfaces.dto;
 
 import io.github.zornx5.domain.entity.Resource;
 import io.github.zornx5.infrastructure.common.enums.ResourceType;
-import io.github.zornx5.infrastructure.common.exception.ResourceNotFoundException;
 import jakarta.validation.constraints.NotBlank;
 
 import java.io.Serializable;
-import java.util.Optional;
 
 /**
  * 资源更新请求
@@ -35,12 +33,5 @@ public record ResourceUpdateRequest<U, PK extends Serializable>(
                 .icon(this.icon)
                 .url(this.url)
                 .build();
-    }
-
-    public Resource<U, PK> assignTo(Optional<Resource<U, PK>> resource) {
-        if (resource.isEmpty()) {
-            throw new ResourceNotFoundException();
-        }
-        return this.assignTo(resource.get());
     }
 }

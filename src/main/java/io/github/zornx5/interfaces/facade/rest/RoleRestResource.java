@@ -1,6 +1,7 @@
 package io.github.zornx5.interfaces.facade.rest;
 
 import io.github.zornx5.domain.service.RoleService;
+import io.github.zornx5.infrastructure.common.exception.RoleNotFoundException;
 import io.github.zornx5.infrastructure.repository.RoleQuery;
 import io.github.zornx5.interfaces.assembler.RoleResponseAssembler;
 import io.github.zornx5.interfaces.dto.RoleRegistrationRequest;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -53,7 +55,7 @@ public class RoleRestResource<U, PK extends Serializable> implements RoleApi<U, 
     @Override
     @GetMapping("/{id}")
     public Optional<RoleResponse<U, PK>> get(@PathVariable String id) {
-        return RoleResponse.of(roleService.findById(id));
+        return roleService.findById(id).map(RoleResponse::of);
     }
 
     @Override
@@ -66,7 +68,11 @@ public class RoleRestResource<U, PK extends Serializable> implements RoleApi<U, 
     @PatchMapping("/{id}")
     public RoleResponse<U, PK> update(@PathVariable String id,
                                       @RequestBody @Valid RoleUpdateRequest<U, PK> request) {
-        return RoleResponse.of(roleService.update(request.assignTo(roleService.findById(id))));
+        val role = roleService.findById(id);
+        if (role.isEmpty()) {
+            throw new RoleNotFoundException();
+        }
+        return RoleResponse.of(roleService.update(request.assignTo(role.get())));
     }
 
     @Override

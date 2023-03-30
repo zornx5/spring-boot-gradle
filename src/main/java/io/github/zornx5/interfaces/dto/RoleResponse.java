@@ -40,8 +40,4 @@ public record RoleResponse<U, PK extends Serializable>(
                 role.getLastModifiedDate()
         );
     }
-
-    public static <U, PK extends Serializable> Optional<RoleResponse<U, PK>> of(Optional<Role<U, PK>> resource) {
-        return resource.map(RoleResponse::of);
-    }
 }
