@@ -3,9 +3,9 @@ package io.github.zornx5.domain.entity.jpa;
 import io.github.zornx5.domain.entity.AbstractRole;
 import io.github.zornx5.domain.entity.Resource;
 import io.github.zornx5.domain.entity.Role;
+import io.github.zornx5.domain.entity.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -32,10 +32,15 @@ import java.util.Collection;
 public class JpaRole extends AbstractRole<JpaUser, Long> {
     private static final long serialVersionUID = 14130110092L;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH, targetEntity = JpaRole.class)
+    @ManyToMany(mappedBy = "roles", targetEntity = JpaUser.class)
+    @ToString.Exclude
+    private Collection<User<JpaUser, Long>> users;
+
+    @ManyToMany(cascade = CascadeType.MERGE, targetEntity = JpaRole.class)
     @JoinTable(name = "t_roles_resources",
-            joinColumns = @JoinColumn(name = "role_id "),
-            inverseJoinColumns = @JoinColumn(name = "resource_id"))
+            joinColumns = {@JoinColumn(name = "role_id")},
+            inverseJoinColumns = {@JoinColumn(name = "resource_id")}
+    )
     @ToString.Exclude
     private Collection<Resource<JpaUser, Long>> resources;
 

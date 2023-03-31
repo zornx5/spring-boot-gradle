@@ -63,11 +63,11 @@ public class JpaUser extends AbstractUser<JpaUser, Long> {
     @Column(nullable = false)
     private UserStatus status;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH, targetEntity = JpaRole.class)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, targetEntity = JpaRole.class)
     @JoinTable(
             name = "t_users_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id")}
     )
     @ToString.Exclude
     private Collection<Role<JpaUser, Long>> roles;

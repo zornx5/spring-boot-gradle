@@ -2,12 +2,14 @@ package io.github.zornx5.domain.entity.jpa;
 
 import io.github.zornx5.domain.entity.AbstractResource;
 import io.github.zornx5.domain.entity.Resource;
+import io.github.zornx5.domain.entity.Role;
 import io.github.zornx5.infrastructure.common.enums.ResourceType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -40,12 +42,22 @@ public class JpaResource extends AbstractResource<JpaUser, Long> {
 
     private String url;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, targetEntity = JpaResource.class)
+    @ManyToMany(mappedBy = "resources", targetEntity = JpaRole.class)
+    @ToString.Exclude
+    private Collection<Role<JpaUser, Long>> roles;
+
+    @ManyToOne(cascade = CascadeType.ALL, targetEntity = JpaResource.class)
     @JoinTable(name = "t_resources_resources",
-            joinColumns = @JoinColumn(name = "resource_id "),
-            inverseJoinColumns = @JoinColumn(name = "children_resource_id"))
+            joinColumns = {@JoinColumn(name = "resource_id")},
+            inverseJoinColumns = {@JoinColumn(name = "children_resource_id")}
+    )
+    @ToString.Exclude
+    private Resource<JpaUser, Long> parent;
+
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, targetEntity = JpaResource.class)
     @ToString.Exclude
     private Collection<Resource<JpaUser, Long>> children;
+
 
     public JpaResource(Long id) {
         this.setId(id);

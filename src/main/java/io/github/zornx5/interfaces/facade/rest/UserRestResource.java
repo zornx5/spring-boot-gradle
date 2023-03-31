@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.Serializable;
@@ -48,8 +47,8 @@ public class UserRestResource<U, PK extends Serializable> implements UserApi<U, 
     @Override
     @GetMapping("")
     public Page<UserResponse<U, PK>> page(
-            @RequestParam(required = false) UserQuery query,
-            @RequestParam(required = false) @PageableDefault(page = 0, size = 15) Pageable pageable) {
+            @Valid UserQuery query,
+            @PageableDefault(size = 15) Pageable pageable) {
         return new UserResponseAssembler<U, PK>().of(userService.findAll(query, pageable));
     }
 

@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.Serializable;
@@ -47,8 +46,8 @@ public class RoleRestResource<U, PK extends Serializable> implements RoleApi<U, 
     @Override
     @GetMapping("")
     public Page<RoleResponse<U, PK>> page(
-            @RequestParam(required = false) RoleQuery query,
-            @RequestParam(required = false) @PageableDefault(page = 0, size = 15) Pageable pageable) {
+            @Valid RoleQuery query,
+            @PageableDefault(size = 15) Pageable pageable) {
         return new RoleResponseAssembler<U, PK>().of(roleService.findAll(null, pageable));
     }
 
