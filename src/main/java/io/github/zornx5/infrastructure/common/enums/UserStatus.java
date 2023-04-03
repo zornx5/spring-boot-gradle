@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  *
  * @author zornx5
  */
-public enum UserStatus {
+public enum UserStatus implements Status {
     /**
      * 草稿的
      */
@@ -44,5 +44,15 @@ public enum UserStatus {
     @Override
     public String toString() {
         return this.name().toLowerCase();
+    }
+
+    @Override
+    public boolean isActive() {
+        return this.equals(UserStatus.ACTIVE);
+    }
+
+    @Override
+    public Status[] getStatus() {
+        return UserStatus.values();
     }
 }
