@@ -70,6 +70,10 @@ public interface User<U, PK extends Serializable> extends Expirable<PK, LocalDat
 
     void setRoles(Collection<Role<U, PK>> roles);
 
+    void addRole(Role<U, PK> role);
+
+    void removeRole(Role<U, PK> role);
+
     interface Builder<U, PK extends Serializable> extends DomainBuilder<User<U, PK>> {
         Builder<U, PK> id(PK id);
 

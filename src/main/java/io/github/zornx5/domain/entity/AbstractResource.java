@@ -5,7 +5,6 @@ import io.github.zornx5.infrastructure.common.enums.ResourceType;
 import jakarta.persistence.MappedSuperclass;
 
 import java.io.Serializable;
-import java.util.Collection;
 
 /**
  * 抽象资源
@@ -84,8 +83,8 @@ public abstract class AbstractResource<U, PK extends Serializable> extends Abstr
         }
 
         @Override
-        public Builder<U, PK> children(Collection<Resource<U, PK>> children) {
-            this.resource.setChildren(children);
+        public Builder<U, PK> parent(Resource<U, PK> parent) {
+            this.resource.setParent(parent);
             return this;
         }
     }

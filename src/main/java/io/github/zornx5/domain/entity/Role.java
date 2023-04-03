@@ -20,9 +20,15 @@ public interface Role<U, PK extends Serializable> extends Nameable<PK>,
      */
     void init();
 
+    Collection<User<U, PK>> getUsers();
+
     Collection<Resource<U, PK>> getResources();
 
     void setResources(Collection<Resource<U, PK>> resources);
+
+    void addResource(Resource<U, PK> resource);
+
+    void removeResource(Resource<U, PK> resource);
 
     interface Builder<U, PK extends Serializable> extends DomainBuilder<Role<U, PK>> {
         Builder<U, PK> id(PK id);

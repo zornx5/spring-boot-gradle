@@ -4,9 +4,10 @@ import io.github.zornx5.domain.entity.Resource;
 import io.github.zornx5.domain.event.ImmutableResourceDeletedEvent;
 import io.github.zornx5.domain.event.ImmutableResourceRegisteredEvent;
 import io.github.zornx5.domain.event.ImmutableResourceUpdatedEvent;
-import io.github.zornx5.infrastructure.common.exception.UserNotFoundException;
+import io.github.zornx5.infrastructure.common.exception.ResourceNotFoundException;
 import io.github.zornx5.infrastructure.repository.ResourceQuery;
 import io.github.zornx5.infrastructure.repository.ResourceRepository;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,12 +34,12 @@ import java.util.Optional;
 public class ResourceServiceImpl<U, PK extends Serializable>
         implements ApplicationEventPublisherAware, ResourceService<U, PK> {
 
-    private final ResourceRepository<U, PK> repository;
+    private final ResourceRepository<U, PK> resourceRepository;
 
     private ApplicationEventPublisher eventPublisher;
 
     @Override
-    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+    public void setApplicationEventPublisher(@Nonnull ApplicationEventPublisher applicationEventPublisher) {
         this.eventPublisher = applicationEventPublisher;
     }
 
@@ -49,60 +50,56 @@ public class ResourceServiceImpl<U, PK extends Serializable>
 
     @Override
     public Resource<U, PK> create() {
-        return repository.create();
+        return resourceRepository.create();
     }
 
     @Override
     public Resource<U, PK> create(PK id) {
-        return repository.create(id);
+        return resourceRepository.create(id);
     }
 
     @Override
     public Resource<U, PK> save(Resource<U, PK> entity) {
-        Resource<U, PK> resource = repository.save(entity);
+        Resource<U, PK> resource = resourceRepository.save(entity);
         eventPublisher.publishEvent(new ImmutableResourceRegisteredEvent<>(resource));
         return resource;
     }
 
     @Override
     public void delete(Resource<U, PK> entity) {
-        repository.delete(entity);
+        resourceRepository.delete(entity);
         eventPublisher.publishEvent(new ImmutableResourceDeletedEvent<>(entity));
     }
 
     @Override
     public void delete(PK id) {
-        Optional<Resource<U, PK>> resource = repository.findById(id);
-        if (resource.isEmpty()) {
-            throw new UserNotFoundException();
-        }
-        this.delete(resource.get());
+        this.delete(resourceRepository.findById(id).orElseThrow(ResourceNotFoundException::new));
     }
 
     @Override
     public Resource<U, PK> update(Resource<U, PK> entity) {
-        Resource<U, PK> resource = repository.save(entity);
+        Resource<U, PK> resource = resourceRepository.save(entity);
         eventPublisher.publishEvent(new ImmutableResourceUpdatedEvent<>(entity));
         return resource;
     }
 
     @Override
     public Optional<Resource<U, PK>> findById(PK id) {
-        return repository.findById(id);
+        return resourceRepository.findById(id);
     }
 
     @Override
     public Optional<Resource<U, PK>> findByQuery(ResourceQuery query) {
-        return repository.findByQuery(query);
+        return resourceRepository.findByQuery(query);
     }
 
     @Override
     public List<Resource<U, PK>> findAllById(Collection<PK> ids) {
-        return repository.findAllById(ids);
+        return resourceRepository.findAllById(ids);
     }
 
     @Override
     public Page<Resource<U, PK>> findAll(ResourceQuery query, Pageable pageable) {
-        return repository.findAll(query, pageable);
+        return resourceRepository.findAll(query, pageable);
     }
 }

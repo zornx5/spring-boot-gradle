@@ -4,9 +4,10 @@ import io.github.zornx5.domain.entity.Role;
 import io.github.zornx5.domain.event.ImmutableRoleDeletedEvent;
 import io.github.zornx5.domain.event.ImmutableRoleRegisteredEvent;
 import io.github.zornx5.domain.event.ImmutableRoleUpdatedEvent;
-import io.github.zornx5.infrastructure.common.exception.UserNotFoundException;
+import io.github.zornx5.infrastructure.common.exception.RoleNotFoundException;
 import io.github.zornx5.infrastructure.repository.RoleQuery;
 import io.github.zornx5.infrastructure.repository.RoleRepository;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,12 +34,12 @@ import java.util.Optional;
 public class RoleServiceImpl<U, PK extends Serializable>
         implements ApplicationEventPublisherAware, RoleService<U, PK> {
 
-    private final RoleRepository<U, PK> repository;
+    private final RoleRepository<U, PK> roleRepository;
 
     private ApplicationEventPublisher eventPublisher;
 
     @Override
-    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+    public void setApplicationEventPublisher(@Nonnull ApplicationEventPublisher applicationEventPublisher) {
         this.eventPublisher = applicationEventPublisher;
     }
 
@@ -49,60 +50,56 @@ public class RoleServiceImpl<U, PK extends Serializable>
 
     @Override
     public Role<U, PK> create() {
-        return repository.create();
+        return roleRepository.create();
     }
 
     @Override
     public Role<U, PK> create(PK id) {
-        return repository.create(id);
+        return roleRepository.create(id);
     }
 
     @Override
     public Role<U, PK> save(Role<U, PK> entity) {
-        Role<U, PK> role = repository.save(entity);
+        Role<U, PK> role = roleRepository.save(entity);
         eventPublisher.publishEvent(new ImmutableRoleRegisteredEvent<>(role));
         return role;
     }
 
     @Override
     public void delete(Role<U, PK> entity) {
-        repository.delete(entity);
+        roleRepository.delete(entity);
         eventPublisher.publishEvent(new ImmutableRoleDeletedEvent<>(entity));
     }
 
     @Override
     public void delete(PK id) {
-        Optional<Role<U, PK>> role = repository.findById(id);
-        if (role.isEmpty()) {
-            throw new UserNotFoundException();
-        }
-        this.delete(role.get());
+        this.delete(roleRepository.findById(id).orElseThrow(RoleNotFoundException::new));
     }
 
     @Override
     public Role<U, PK> update(Role<U, PK> entity) {
-        Role<U, PK> role = repository.save(entity);
+        Role<U, PK> role = roleRepository.save(entity);
         eventPublisher.publishEvent(new ImmutableRoleUpdatedEvent<>(entity));
         return role;
     }
 
     @Override
     public Optional<Role<U, PK>> findById(PK id) {
-        return repository.findById(id);
+        return roleRepository.findById(id);
     }
 
     @Override
     public Optional<Role<U, PK>> findByQuery(RoleQuery query) {
-        return repository.findByQuery(query);
+        return roleRepository.findByQuery(query);
     }
 
     @Override
     public List<Role<U, PK>> findAllById(Collection<PK> ids) {
-        return repository.findAllById(ids);
+        return roleRepository.findAllById(ids);
     }
 
     @Override
     public Page<Role<U, PK>> findAll(RoleQuery query, Pageable pageable) {
-        return repository.findAll(query, pageable);
+        return roleRepository.findAll(query, pageable);
     }
 }

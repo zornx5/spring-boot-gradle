@@ -1,14 +1,18 @@
 package io.github.zornx5.interfaces.dto;
 
 import io.github.zornx5.domain.entity.User;
+import io.github.zornx5.domain.service.RoleService;
 import io.github.zornx5.infrastructure.common.enums.UserGender;
 import io.github.zornx5.infrastructure.common.enums.UserStatus;
+import io.github.zornx5.infrastructure.common.exception.RoleNotFoundException;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 用户注册请求
@@ -45,9 +49,9 @@ public record UserRegistrationRequest<U, PK extends Serializable>(
         @NotNull(message = "状态不能为空") UserStatus status,
         @NotBlank(message = "密码不能为空") String password,
         LocalDateTime expiredDate,
-        Set<String> roleIds
+        Set<Long> roleIds
 ) {
-    public User<U, PK> assignTo(User<U, PK> user) {
+    public User<U, PK> assignTo(User<U, PK> user, RoleService<U, PK> roleService) {
         return user.toBuilder()
                 .name(this.username)
                 .description(this.description)
@@ -62,7 +66,11 @@ public record UserRegistrationRequest<U, PK extends Serializable>(
                 .status(this.status)
                 .password(this.password)
                 .expiredTime(this.expiredDate)
-//                .roles(CollectionUtils.emptyIfNull(this.roleIds).stream().map(id->CastUtils.cast(new JpaRole(id))).collect(Collectors.toSet()))
+                .roles(CollectionUtils.emptyIfNull(this.roleIds)
+                        .stream()
+                        .map(id -> roleService.findById((PK) id)
+                                .orElseThrow(() -> new RoleNotFoundException("不存在要关联的角色" + id)))
+                        .collect(Collectors.toSet()))
                 .build();
     }
 }

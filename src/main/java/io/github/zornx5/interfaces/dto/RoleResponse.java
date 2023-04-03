@@ -1,10 +1,15 @@
 package io.github.zornx5.interfaces.dto;
 
+import io.github.zornx5.domain.entity.Resource;
 import io.github.zornx5.domain.entity.Role;
+import io.github.zornx5.domain.entity.User;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 角色响应
@@ -27,7 +32,9 @@ public record RoleResponse<U, PK extends Serializable>(
         Optional<U> createdBy,
         Optional<LocalDateTime> createdDate,
         Optional<U> lastModifiedBy,
-        Optional<LocalDateTime> lastModifiedDate
+        Optional<LocalDateTime> lastModifiedDate,
+        Collection<PK> userIds,
+        Collection<PK> resourceIds
 ) {
     public static <U, PK extends Serializable> RoleResponse<U, PK> of(Role<U, PK> role) {
         return new RoleResponse<>(
@@ -37,7 +44,9 @@ public record RoleResponse<U, PK extends Serializable>(
                 role.getCreatedBy(),
                 role.getCreatedDate(),
                 role.getLastModifiedBy(),
-                role.getLastModifiedDate()
+                role.getLastModifiedDate(),
+                CollectionUtils.emptyIfNull(role.getUsers()).stream().map(User::getId).collect(Collectors.toSet()),
+                CollectionUtils.emptyIfNull(role.getResources()).stream().map(Resource::getId).collect(Collectors.toSet())
         );
     }
 }

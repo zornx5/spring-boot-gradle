@@ -8,7 +8,6 @@ import io.github.zornx5.infrastructure.common.enums.UserStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -63,7 +62,7 @@ public class JpaUser extends AbstractUser<JpaUser, Long> {
     @Column(nullable = false)
     private UserStatus status;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, targetEntity = JpaRole.class)
+    @ManyToMany(cascade = CascadeType.MERGE, targetEntity = JpaRole.class)
     @JoinTable(
             name = "t_users_roles",
             joinColumns = {@JoinColumn(name = "user_id")},
@@ -84,5 +83,15 @@ public class JpaUser extends AbstractUser<JpaUser, Long> {
         var target = new JpaUser();
         BeanUtils.copyProperties(user, target);
         return target;
+    }
+
+    @Override
+    public void addRole(Role<JpaUser, Long> role) {
+        getRoles().add(role);
+    }
+
+    @Override
+    public void removeRole(Role<JpaUser, Long> role) {
+        getRoles().remove(role);
     }
 }

@@ -1,11 +1,15 @@
 package io.github.zornx5.interfaces.dto;
 
 import io.github.zornx5.domain.entity.Resource;
+import io.github.zornx5.domain.entity.Role;
 import io.github.zornx5.infrastructure.common.enums.ResourceType;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 资源响应
@@ -36,7 +40,10 @@ public record ResourceResponse<U, PK extends Serializable>(
         Optional<U> createdBy,
         Optional<LocalDateTime> createdDate,
         Optional<U> lastModifiedBy,
-        Optional<LocalDateTime> lastModifiedDate
+        Optional<LocalDateTime> lastModifiedDate,
+        Collection<PK> roleIds,
+        Optional<PK> parentId,
+        Collection<PK> childrenIds
 ) {
     public static <U, PK extends Serializable> ResourceResponse<U, PK> of(Resource<U, PK> resource) {
         return new ResourceResponse<>(
@@ -50,7 +57,10 @@ public record ResourceResponse<U, PK extends Serializable>(
                 resource.getCreatedBy(),
                 resource.getCreatedDate(),
                 resource.getLastModifiedBy(),
-                resource.getLastModifiedDate()
+                resource.getLastModifiedDate(),
+                CollectionUtils.emptyIfNull(resource.getRoles()).stream().map(Role::getId).collect(Collectors.toSet()),
+                resource.getParent() == null ? null : Optional.ofNullable(resource.getParent().getId()),
+                CollectionUtils.emptyIfNull(resource.getChildren()).stream().map(Resource::getId).collect(Collectors.toSet())
         );
     }
 }

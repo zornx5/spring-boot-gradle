@@ -7,6 +7,7 @@ import io.github.zornx5.domain.event.ImmutableUserUpdatedEvent;
 import io.github.zornx5.infrastructure.common.exception.UserNotFoundException;
 import io.github.zornx5.infrastructure.repository.UserQuery;
 import io.github.zornx5.infrastructure.repository.UserRepository;
+import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,71 +32,67 @@ import java.util.Optional;
 @Slf4j
 public class UserServiceImpl<U, PK extends Serializable>
         implements ApplicationEventPublisherAware, UserService<U, PK> {
-    private final UserRepository<U, PK> repository;
+    private final UserRepository<U, PK> userRepository;
 
     private ApplicationEventPublisher eventPublisher;
 
     @Override
-    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+    public void setApplicationEventPublisher(@Nonnull ApplicationEventPublisher applicationEventPublisher) {
         this.eventPublisher = applicationEventPublisher;
     }
 
     @Override
     public User<U, PK> create() {
-        return repository.create();
+        return userRepository.create();
     }
 
     @Override
     public User<U, PK> create(PK id) {
-        return repository.create(id);
+        return userRepository.create(id);
     }
 
     @Override
     public User<U, PK> save(User<U, PK> entity) {
-        User<U, PK> user = repository.save(entity);
+        User<U, PK> user = userRepository.save(entity);
         eventPublisher.publishEvent(new ImmutableUserRegisteredEvent<>(user));
         return user;
     }
 
     @Override
     public void delete(User<U, PK> entity) {
-        repository.delete(entity);
+        userRepository.delete(entity);
         eventPublisher.publishEvent(new ImmutableUserDeletedEvent<>(entity));
     }
 
     @Override
     public void delete(PK id) {
-        Optional<User<U, PK>> user = repository.findById(id);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException();
-        }
-        this.delete(user.get());
+        this.delete(userRepository.findById(id).orElseThrow(UserNotFoundException::new));
     }
 
     @Override
     public User<U, PK> update(User<U, PK> entity) {
-        User<U, PK> user = repository.save(entity);
+        User<U, PK> user = userRepository.save(entity);
         eventPublisher.publishEvent(new ImmutableUserUpdatedEvent<>(entity));
         return user;
     }
 
     @Override
     public Optional<User<U, PK>> findById(PK id) {
-        return repository.findById(id);
+        return userRepository.findById(id);
     }
 
     @Override
     public Optional<User<U, PK>> findByQuery(UserQuery query) {
-        return repository.findByQuery(query);
+        return userRepository.findByQuery(query);
     }
 
     @Override
     public List<User<U, PK>> findAllById(Collection<PK> ids) {
-        return repository.findAllById(ids);
+        return userRepository.findAllById(ids);
     }
 
     @Override
     public Page<User<U, PK>> findAll(UserQuery query, Pageable pageable) {
-        return repository.findAll(query, pageable);
+        return userRepository.findAll(query, pageable);
     }
 }

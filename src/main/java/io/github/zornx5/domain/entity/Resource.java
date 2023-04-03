@@ -34,9 +34,17 @@ public interface Resource<U, PK extends Serializable> extends Nameable<PK>,
 
     void setUrl(String url);
 
+    Resource<U, PK> getParent();
+
+    void setParent(Resource<U, PK> parent);
+
+    Collection<Role<U, PK>> getRoles();
+
     Collection<Resource<U, PK>> getChildren();
 
-    void setChildren(Collection<Resource<U, PK>> children);
+    void addChild(Resource<U, PK> resource);
+
+    void removeChild(Resource<U, PK> resource);
 
     interface Builder<U, PK extends Serializable> extends DomainBuilder<Resource<U, PK>> {
         Builder<U, PK> id(PK id);
@@ -53,6 +61,6 @@ public interface Resource<U, PK extends Serializable> extends Nameable<PK>,
 
         Builder<U, PK> url(String url);
 
-        Builder<U, PK> children(Collection<Resource<U, PK>> children);
+        Builder<U, PK> parent(Resource<U, PK> parent);
     }
 }

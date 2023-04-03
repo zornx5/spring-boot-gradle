@@ -46,15 +46,15 @@ public class JpaResource extends AbstractResource<JpaUser, Long> {
     @ToString.Exclude
     private Collection<Role<JpaUser, Long>> roles;
 
-    @ManyToOne(cascade = CascadeType.ALL, targetEntity = JpaResource.class)
+    @ManyToOne(cascade = CascadeType.MERGE, targetEntity = JpaResource.class)
     @JoinTable(name = "t_resources_resources",
             joinColumns = {@JoinColumn(name = "resource_id")},
-            inverseJoinColumns = {@JoinColumn(name = "children_resource_id")}
+            inverseJoinColumns = {@JoinColumn(name = "resource_children_id")}
     )
     @ToString.Exclude
     private Resource<JpaUser, Long> parent;
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, targetEntity = JpaResource.class)
+    @OneToMany(mappedBy = "parent", targetEntity = JpaResource.class)
     @ToString.Exclude
     private Collection<Resource<JpaUser, Long>> children;
 
@@ -71,5 +71,15 @@ public class JpaResource extends AbstractResource<JpaUser, Long> {
         var target = new JpaResource();
         BeanUtils.copyProperties(resource, target);
         return target;
+    }
+
+    @Override
+    public void addChild(Resource<JpaUser, Long> resource) {
+        getChildren().add(resource);
+    }
+
+    @Override
+    public void removeChild(Resource<JpaUser, Long> resource) {
+        getChildren().remove(resource);
     }
 }

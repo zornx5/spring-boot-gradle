@@ -3,10 +3,14 @@ package io.github.zornx5.interfaces.dto;
 import io.github.zornx5.domain.entity.User;
 import io.github.zornx5.infrastructure.common.enums.UserGender;
 import io.github.zornx5.infrastructure.common.enums.UserStatus;
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.data.domain.Persistable;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 用户响应
@@ -50,7 +54,8 @@ public record UserResponse<U, PK extends Serializable>(
         Optional<LocalDateTime> createdDate,
         Optional<U> lastModifiedBy,
         Optional<LocalDateTime> lastModifiedDate,
-        Optional<LocalDateTime> expiredDate
+        Optional<LocalDateTime> expiredDate,
+        Collection<PK> roleIds
 ) {
     public static <U, PK extends Serializable> UserResponse<U, PK> of(User<U, PK> user) {
         return new UserResponse<>(
@@ -71,7 +76,8 @@ public record UserResponse<U, PK extends Serializable>(
                 user.getCreatedDate(),
                 user.getLastModifiedBy(),
                 user.getLastModifiedDate(),
-                user.getExpiredDate()
+                user.getExpiredDate(),
+                CollectionUtils.emptyIfNull(user.getRoles()).stream().map(Persistable::getId).collect(Collectors.toSet())
         );
     }
 }

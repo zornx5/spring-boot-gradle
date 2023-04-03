@@ -1,5 +1,6 @@
 package io.github.zornx5.interfaces.facade.rest;
 
+import io.github.zornx5.domain.service.RoleService;
 import io.github.zornx5.domain.service.UserService;
 import io.github.zornx5.infrastructure.common.exception.UserNotFoundException;
 import io.github.zornx5.infrastructure.repository.UserQuery;
@@ -13,7 +14,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,7 +42,10 @@ import java.util.Optional;
 @Slf4j
 @Tag(name = "用户 Restful 资源")
 public class UserRestResource<U, PK extends Serializable> implements UserApi<U, PK> {
+
     private final UserService<U, PK> userService;
+
+    private final RoleService<U, PK> roleService;
 
     @Override
     @GetMapping("")
@@ -61,18 +64,15 @@ public class UserRestResource<U, PK extends Serializable> implements UserApi<U, 
     @Override
     @PostMapping("")
     public UserResponse<U, PK> register(@RequestBody @Valid UserRegistrationRequest<U, PK> request) {
-        return UserResponse.of(userService.save(request.assignTo(userService.create())));
+        return UserResponse.of(userService.save(request.assignTo(userService.create(), roleService)));
     }
 
     @Override
     @PatchMapping("/{id}")
     public UserResponse<U, PK> update(@PathVariable Long id,
                                       @RequestBody @Valid UserUpdateRequest<U, PK> request) {
-        val user = userService.findById((PK) id);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException();
-        }
-        return UserResponse.of(userService.update(request.assignTo(user.get())));
+        return UserResponse.of(userService.update(request.assignTo(userService.findById((PK) id)
+                .orElseThrow(() -> new UserNotFoundException("不存在要更新的用户 " + id)), roleService)));
     }
 
     @Override

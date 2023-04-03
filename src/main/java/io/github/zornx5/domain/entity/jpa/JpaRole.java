@@ -36,7 +36,7 @@ public class JpaRole extends AbstractRole<JpaUser, Long> {
     @ToString.Exclude
     private Collection<User<JpaUser, Long>> users;
 
-    @ManyToMany(cascade = CascadeType.MERGE, targetEntity = JpaRole.class)
+    @ManyToMany(cascade = CascadeType.MERGE, targetEntity = JpaResource.class)
     @JoinTable(name = "t_roles_resources",
             joinColumns = {@JoinColumn(name = "role_id")},
             inverseJoinColumns = {@JoinColumn(name = "resource_id")}
@@ -56,5 +56,15 @@ public class JpaRole extends AbstractRole<JpaUser, Long> {
         var target = new JpaRole();
         BeanUtils.copyProperties(role, target);
         return target;
+    }
+
+    @Override
+    public void addResource(Resource<JpaUser, Long> resource) {
+        getResources().add(resource);
+    }
+
+    @Override
+    public void removeResource(Resource<JpaUser, Long> resource) {
+        getResources().remove(resource);
     }
 }

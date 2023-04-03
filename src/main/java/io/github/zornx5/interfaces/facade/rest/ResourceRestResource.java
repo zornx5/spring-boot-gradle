@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -60,18 +59,15 @@ public class ResourceRestResource<U, PK extends Serializable> implements Resourc
     @Override
     @PostMapping("")
     public ResourceResponse<U, PK> register(@RequestBody @Valid ResourceRegistrationRequest<U, PK> request) {
-        return ResourceResponse.of(resourceService.save(request.assignTo(resourceService.create())));
+        return ResourceResponse.of(resourceService.save(request.assignTo(resourceService.create(), resourceService)));
     }
 
     @Override
     @PatchMapping("/{id}")
     public ResourceResponse<U, PK> update(@PathVariable Long id,
                                           @RequestBody @Valid ResourceUpdateRequest<U, PK> request) {
-        val resource = resourceService.findById((PK) id);
-        if (resource.isEmpty()) {
-            throw new ResourceNotFoundException();
-        }
-        return ResourceResponse.of(resourceService.update(request.assignTo(resource.get())));
+        return ResourceResponse.of(resourceService.update(request.assignTo(resourceService.findById((PK) id)
+                .orElseThrow(() -> new ResourceNotFoundException("不存在要更新的资源 " + id)), resourceService)));
     }
 
     @Override
