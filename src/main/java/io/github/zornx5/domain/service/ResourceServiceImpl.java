@@ -49,7 +49,7 @@ public class ResourceServiceImpl<U, PK extends Serializable>
 
     @Override
     public Resource<U, PK> create() {
-        return null;
+        return repository.create();
     }
 
     @Override

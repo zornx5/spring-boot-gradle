@@ -49,7 +49,7 @@ public class RoleServiceImpl<U, PK extends Serializable>
 
     @Override
     public Role<U, PK> create() {
-        return null;
+        return repository.create();
     }
 
     @Override
