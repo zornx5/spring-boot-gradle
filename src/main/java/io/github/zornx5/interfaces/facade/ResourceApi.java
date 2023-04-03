@@ -31,7 +31,7 @@ public interface ResourceApi<U, PK extends Serializable> {
      * @param id 资源唯一标识
      * @return 符合条件的资源
      */
-    Optional<ResourceResponse<U, PK>> get(PK id);
+    Optional<ResourceResponse<U, PK>> get(Long id);
 
     /**
      * 注册资源
@@ -47,7 +47,7 @@ public interface ResourceApi<U, PK extends Serializable> {
      * @param request 更新资源请求
      * @return 更新后的数据
      */
-    ResourceResponse<U, PK> update(PK id, ResourceUpdateRequest<U, PK> request);
+    ResourceResponse<U, PK> update(Long id, ResourceUpdateRequest<U, PK> request);
 
     /**
      * 删除资源
@@ -55,5 +55,5 @@ public interface ResourceApi<U, PK extends Serializable> {
      * @param id 资源唯一标识
      * @return 是否删除
      */
-    Void delete(PK id);
+    Void delete(Long id);
 }

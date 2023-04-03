@@ -54,8 +54,8 @@ public class UserRestResource<U, PK extends Serializable> implements UserApi<U, 
 
     @Override
     @GetMapping("/{id}")
-    public Optional<UserResponse<U, PK>> get(@PathVariable PK id) {
-        return userService.findById(id).map(UserResponse::of);
+    public Optional<UserResponse<U, PK>> get(@PathVariable Long id) {
+        return userService.findById((PK) id).map(UserResponse::of);
     }
 
     @Override
@@ -66,9 +66,9 @@ public class UserRestResource<U, PK extends Serializable> implements UserApi<U, 
 
     @Override
     @PatchMapping("/{id}")
-    public UserResponse<U, PK> update(@PathVariable PK id,
+    public UserResponse<U, PK> update(@PathVariable Long id,
                                       @RequestBody @Valid UserUpdateRequest<U, PK> request) {
-        val user = userService.findById(id);
+        val user = userService.findById((PK) id);
         if (user.isEmpty()) {
             throw new UserNotFoundException();
         }
@@ -77,8 +77,8 @@ public class UserRestResource<U, PK extends Serializable> implements UserApi<U, 
 
     @Override
     @DeleteMapping("/{id}")
-    public Void delete(@PathVariable PK id) {
-        userService.delete(id);
+    public Void delete(@PathVariable Long id) {
+        userService.delete((PK) id);
         return null;
     }
 

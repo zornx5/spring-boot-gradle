@@ -53,8 +53,8 @@ public class ResourceRestResource<U, PK extends Serializable> implements Resourc
 
     @Override
     @GetMapping("/{id}")
-    public Optional<ResourceResponse<U, PK>> get(@PathVariable PK id) {
-        return resourceService.findById(id).map(ResourceResponse::of);
+    public Optional<ResourceResponse<U, PK>> get(@PathVariable Long id) {
+        return resourceService.findById((PK) id).map(ResourceResponse::of);
     }
 
     @Override
@@ -65,9 +65,9 @@ public class ResourceRestResource<U, PK extends Serializable> implements Resourc
 
     @Override
     @PatchMapping("/{id}")
-    public ResourceResponse<U, PK> update(@PathVariable PK id,
+    public ResourceResponse<U, PK> update(@PathVariable Long id,
                                           @RequestBody @Valid ResourceUpdateRequest<U, PK> request) {
-        val resource = resourceService.findById(id);
+        val resource = resourceService.findById((PK) id);
         if (resource.isEmpty()) {
             throw new ResourceNotFoundException();
         }
@@ -76,8 +76,8 @@ public class ResourceRestResource<U, PK extends Serializable> implements Resourc
 
     @Override
     @DeleteMapping("/{id}")
-    public Void delete(@PathVariable PK id) {
-        resourceService.delete(id);
+    public Void delete(@PathVariable Long id) {
+        resourceService.delete((PK) id);
         return null;
     }
 }

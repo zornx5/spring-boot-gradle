@@ -53,8 +53,8 @@ public class RoleRestResource<U, PK extends Serializable> implements RoleApi<U, 
 
     @Override
     @GetMapping("/{id}")
-    public Optional<RoleResponse<U, PK>> get(@PathVariable PK id) {
-        return roleService.findById(id).map(RoleResponse::of);
+    public Optional<RoleResponse<U, PK>> get(@PathVariable Long id) {
+        return roleService.findById((PK) id).map(RoleResponse::of);
     }
 
     @Override
@@ -65,9 +65,9 @@ public class RoleRestResource<U, PK extends Serializable> implements RoleApi<U, 
 
     @Override
     @PatchMapping("/{id}")
-    public RoleResponse<U, PK> update(@PathVariable PK id,
+    public RoleResponse<U, PK> update(@PathVariable Long id,
                                       @RequestBody @Valid RoleUpdateRequest<U, PK> request) {
-        val role = roleService.findById(id);
+        val role = roleService.findById((PK) id);
         if (role.isEmpty()) {
             throw new RoleNotFoundException();
         }
@@ -76,8 +76,8 @@ public class RoleRestResource<U, PK extends Serializable> implements RoleApi<U, 
 
     @Override
     @DeleteMapping("/{id}")
-    public Void delete(@PathVariable PK id) {
-        roleService.delete(id);
+    public Void delete(@PathVariable Long id) {
+        roleService.delete((PK) id);
         return null;
     }
 }
