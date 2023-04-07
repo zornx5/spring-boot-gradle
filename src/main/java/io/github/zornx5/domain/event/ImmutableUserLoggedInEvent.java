@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 @EqualsAndHashCode(callSuper = true)
 @Value
-public class ImmutableUserLoggedInEvent<U, PK extends Serializable> extends AbstractUserEvent<U, PK>
+public class ImmutableUserLoggedInEvent<U extends User<U, PK>, PK extends Serializable> extends AbstractUserEvent<U, PK>
         implements UserLoggedInEvent<U, PK> {
     public ImmutableUserLoggedInEvent(User<U, PK> user) {
         super(user);

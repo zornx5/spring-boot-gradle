@@ -1,6 +1,7 @@
 package io.github.zornx5.interfaces.dto;
 
 import io.github.zornx5.domain.entity.Role;
+import io.github.zornx5.domain.entity.User;
 import io.github.zornx5.domain.service.ResourceService;
 import io.github.zornx5.infrastructure.common.exception.RoleNotFoundException;
 import jakarta.validation.constraints.NotBlank;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
  * @param <PK>        主键
  * @author zornx5
  */
-public record RoleRegistrationRequest<U, PK extends Serializable>(
+public record RoleRegistrationRequest<U extends User<U, PK>, PK extends Serializable>(
         @NotBlank(message = "角色名不能为空") String name,
         String description,
         Set<Long> resourceIds

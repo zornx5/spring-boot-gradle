@@ -1,6 +1,7 @@
 package io.github.zornx5.domain.service;
 
 import io.github.zornx5.domain.entity.Resource;
+import io.github.zornx5.domain.entity.User;
 import io.github.zornx5.domain.event.ImmutableResourceDeletedEvent;
 import io.github.zornx5.domain.event.ImmutableResourceRegisteredEvent;
 import io.github.zornx5.domain.event.ImmutableResourceUpdatedEvent;
@@ -31,7 +32,7 @@ import java.util.Optional;
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 @Service
 @Slf4j
-public class ResourceServiceImpl<U, PK extends Serializable>
+public class ResourceServiceImpl<U extends User<U, PK>, PK extends Serializable>
         implements ApplicationEventPublisherAware, ResourceService<U, PK> {
 
     private final ResourceRepository<U, PK> resourceRepository;

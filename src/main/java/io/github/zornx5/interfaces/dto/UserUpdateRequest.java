@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public record UserUpdateRequest<U, PK extends Serializable>(
+public record UserUpdateRequest<U extends User<U, PK>, PK extends Serializable>(
         String description,
         @NotBlank(message = "姓不能为空") String firstName,
         @NotBlank(message = "名不能为空") String lastName,

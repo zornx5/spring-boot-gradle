@@ -1,5 +1,6 @@
 package io.github.zornx5.interfaces.facade;
 
+import io.github.zornx5.domain.entity.User;
 import io.github.zornx5.infrastructure.repository.ResourceQuery;
 import io.github.zornx5.interfaces.dto.ResourceRegistrationRequest;
 import io.github.zornx5.interfaces.dto.ResourceResponse;
@@ -15,7 +16,7 @@ import java.util.Optional;
  *
  * @author zornx5
  */
-public interface ResourceApi<U, PK extends Serializable> {
+public interface ResourceApi<U extends User<U, PK>, PK extends Serializable> {
     /**
      * 分页获取资源列表集合
      *
@@ -53,7 +54,6 @@ public interface ResourceApi<U, PK extends Serializable> {
      * 删除资源
      *
      * @param id 资源唯一标识
-     * @return 是否删除
      */
-    Void delete(Long id);
+    void delete(Long id);
 }

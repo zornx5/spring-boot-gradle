@@ -1,4 +1,5 @@
 package io.github.zornx5.interfaces.facade.rest;
+
 /*
 RESTful 资源
 

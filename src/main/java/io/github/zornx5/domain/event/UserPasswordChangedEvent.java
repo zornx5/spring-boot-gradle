@@ -1,5 +1,7 @@
 package io.github.zornx5.domain.event;
 
+import io.github.zornx5.domain.entity.User;
+
 import java.io.Serializable;
 
 /**
@@ -7,5 +9,5 @@ import java.io.Serializable;
  *
  * @author zornx5
  */
-public interface UserPasswordChangedEvent<U, PK extends Serializable> extends UserUpdatedEvent<U, PK> {
+public interface UserPasswordChangedEvent<U extends User<U, PK>, PK extends Serializable> extends UserUpdatedEvent<U, PK> {
 }

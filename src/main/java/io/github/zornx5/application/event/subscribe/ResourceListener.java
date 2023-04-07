@@ -1,5 +1,6 @@
 package io.github.zornx5.application.event.subscribe;
 
+import io.github.zornx5.domain.entity.User;
 import io.github.zornx5.domain.event.ResourceDeletedEvent;
 import io.github.zornx5.domain.event.ResourceRegisteredEvent;
 import io.github.zornx5.domain.event.ResourceUpdatedEvent;
@@ -16,7 +17,7 @@ import java.io.Serializable;
  */
 @Component
 @Slf4j
-public class ResourceListener<U, PK extends Serializable> {
+public class ResourceListener<U extends User<U, PK>, PK extends Serializable> {
 
     @EventListener
     public void onResourceRegistered(ResourceRegisteredEvent<U, PK> event) {

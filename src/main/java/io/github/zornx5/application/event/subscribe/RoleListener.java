@@ -1,5 +1,7 @@
 package io.github.zornx5.application.event.subscribe;
 
+
+import io.github.zornx5.domain.entity.User;
 import io.github.zornx5.domain.event.RoleDeletedEvent;
 import io.github.zornx5.domain.event.RoleRegisteredEvent;
 import io.github.zornx5.domain.event.RoleUpdatedEvent;
@@ -16,7 +18,7 @@ import java.io.Serializable;
  */
 @Component
 @Slf4j
-public class RoleListener<U, PK extends Serializable> {
+public class RoleListener<U extends User<U, PK>, PK extends Serializable> {
 
     @EventListener
     public void onRoleRegistered(RoleRegisteredEvent<U, PK> event) {

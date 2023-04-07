@@ -14,9 +14,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * 角色实体
@@ -56,6 +58,17 @@ public class JpaRole extends AbstractRole<JpaUser, Long> {
         var target = new JpaRole();
         BeanUtils.copyProperties(role, target);
         return target;
+    }
+
+    @Override
+    public Collection<String> getPermissions() {
+        HashSet<String> permissions = new HashSet<>();
+        if (CollectionUtils.isNotEmpty(this.getResources())) {
+            for (Resource<JpaUser, Long> resource : this.getResources()) {
+                permissions.addAll(resource.getPermissions());
+            }
+        }
+        return permissions;
     }
 
     @Override

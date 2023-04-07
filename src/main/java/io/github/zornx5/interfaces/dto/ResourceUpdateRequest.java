@@ -1,6 +1,7 @@
 package io.github.zornx5.interfaces.dto;
 
 import io.github.zornx5.domain.entity.Resource;
+import io.github.zornx5.domain.entity.User;
 import io.github.zornx5.domain.service.ResourceService;
 import io.github.zornx5.infrastructure.common.enums.ResourceType;
 import io.github.zornx5.infrastructure.common.exception.ResourceNotFoundException;
@@ -21,7 +22,7 @@ import java.io.Serializable;
  * @param <PK>        主键
  * @author zornx5
  */
-public record ResourceUpdateRequest<U, PK extends Serializable>(
+public record ResourceUpdateRequest<U extends User<U, PK>, PK extends Serializable>(
         String description,
         @NotNull(message = "资源类型不能为空") ResourceType type,
         @NotBlank(message = "权限不能为空") String permission,

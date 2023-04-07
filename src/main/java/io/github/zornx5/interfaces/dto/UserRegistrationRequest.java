@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  * @param <PK>        主键
  * @author zornx5
  */
-public record UserRegistrationRequest<U, PK extends Serializable>(
+public record UserRegistrationRequest<U extends User<U, PK>, PK extends Serializable>(
         @NotBlank(message = "用户名不能为空") String username,
         String description,
         @NotBlank(message = "姓不能为空") String firstName,

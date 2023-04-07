@@ -12,7 +12,7 @@ import java.util.Collection;
  *
  * @author zornx5
  */
-public interface Role<U, PK extends Serializable> extends Nameable<PK>,
+public interface Role<U extends User<U, PK>, PK extends Serializable> extends Nameable<PK>,
         Auditable<U, PK, LocalDateTime>, DomainBuilder.ToBuilder<Role.Builder<U, PK>> {
 
     /**
@@ -26,11 +26,13 @@ public interface Role<U, PK extends Serializable> extends Nameable<PK>,
 
     void setResources(Collection<Resource<U, PK>> resources);
 
+    Collection<String> getPermissions();
+
     void addResource(Resource<U, PK> resource);
 
     void removeResource(Resource<U, PK> resource);
 
-    interface Builder<U, PK extends Serializable> extends DomainBuilder<Role<U, PK>> {
+    interface Builder<U extends User<U, PK>, PK extends Serializable> extends DomainBuilder<Role<U, PK>> {
         Builder<U, PK> id(PK id);
 
         Builder<U, PK> name(String name);

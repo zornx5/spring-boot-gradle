@@ -1,6 +1,7 @@
 package io.github.zornx5.domain.service;
 
 import io.github.zornx5.domain.entity.Role;
+import io.github.zornx5.domain.entity.User;
 import io.github.zornx5.domain.event.ImmutableRoleDeletedEvent;
 import io.github.zornx5.domain.event.ImmutableRoleRegisteredEvent;
 import io.github.zornx5.domain.event.ImmutableRoleUpdatedEvent;
@@ -31,7 +32,7 @@ import java.util.Optional;
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 @Service
 @Slf4j
-public class RoleServiceImpl<U, PK extends Serializable>
+public class RoleServiceImpl<U extends User<U, PK>, PK extends Serializable>
         implements ApplicationEventPublisherAware, RoleService<U, PK> {
 
     private final RoleRepository<U, PK> roleRepository;

@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  * @param <PK>                主键
  * @author zornx5
  */
-public record UserResponse<U, PK extends Serializable>(
+public record UserResponse<U extends User<U, PK>, PK extends Serializable>(
         PK id,
         String username,
         String description,
@@ -57,7 +57,7 @@ public record UserResponse<U, PK extends Serializable>(
         Optional<LocalDateTime> expiredDate,
         Collection<PK> roleIds
 ) {
-    public static <U, PK extends Serializable> UserResponse<U, PK> of(User<U, PK> user) {
+    public static <U extends User<U, PK>, PK extends Serializable> UserResponse<U, PK> of(User<U, PK> user) {
         return new UserResponse<>(
                 user.getId(),
                 user.getName(),

@@ -1,5 +1,6 @@
 package io.github.zornx5.interfaces.facade;
 
+import io.github.zornx5.domain.entity.User;
 import io.github.zornx5.infrastructure.repository.RoleQuery;
 import io.github.zornx5.interfaces.dto.RoleRegistrationRequest;
 import io.github.zornx5.interfaces.dto.RoleResponse;
@@ -15,7 +16,7 @@ import java.util.Optional;
  *
  * @author zornx5
  */
-public interface RoleApi<U, PK extends Serializable> {
+public interface RoleApi<U extends User<U, PK>, PK extends Serializable> {
     /**
      * 分页获取角色列表集合
      *
@@ -53,7 +54,6 @@ public interface RoleApi<U, PK extends Serializable> {
      * 删除角色
      *
      * @param id 角色唯一标识
-     * @return 是否删除
      */
-    Void delete(Long id);
+    void delete(Long id);
 }

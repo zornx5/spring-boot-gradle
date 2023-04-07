@@ -1,5 +1,6 @@
 package io.github.zornx5.interfaces.facade.rest;
 
+import io.github.zornx5.domain.entity.User;
 import io.github.zornx5.domain.service.ResourceService;
 import io.github.zornx5.infrastructure.common.exception.ResourceNotFoundException;
 import io.github.zornx5.infrastructure.repository.ResourceQuery;
@@ -39,7 +40,7 @@ import java.util.Optional;
 @RestController
 @Slf4j
 @Tag(name = "资源 Restful 资源")
-public class ResourceRestResource<U, PK extends Serializable> implements ResourceApi<U, PK> {
+public class ResourceRestResource<U extends User<U, PK>, PK extends Serializable> implements ResourceApi<U, PK> {
     private final ResourceService<U, PK> resourceService;
 
     @Override
@@ -72,8 +73,7 @@ public class ResourceRestResource<U, PK extends Serializable> implements Resourc
 
     @Override
     @DeleteMapping("/{id}")
-    public Void delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) {
         resourceService.delete((PK) id);
-        return null;
     }
 }

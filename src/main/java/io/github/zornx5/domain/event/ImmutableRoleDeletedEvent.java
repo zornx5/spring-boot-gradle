@@ -1,6 +1,7 @@
 package io.github.zornx5.domain.event;
 
 import io.github.zornx5.domain.entity.Role;
+import io.github.zornx5.domain.entity.User;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
@@ -13,7 +14,7 @@ import java.io.Serializable;
  */
 @EqualsAndHashCode(callSuper = true)
 @Value
-public class ImmutableRoleDeletedEvent<U, PK extends Serializable> extends AbstractRoleEvent<U, PK>
+public class ImmutableRoleDeletedEvent<U extends User<U, PK>, PK extends Serializable> extends AbstractRoleEvent<U, PK>
         implements RoleDeletedEvent<U, PK> {
     public ImmutableRoleDeletedEvent(Role<U, PK> role) {
         super(role);

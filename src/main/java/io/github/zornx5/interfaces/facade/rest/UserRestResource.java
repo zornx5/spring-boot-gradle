@@ -1,16 +1,19 @@
 package io.github.zornx5.interfaces.facade.rest;
 
+import io.github.zornx5.domain.entity.User;
 import io.github.zornx5.domain.service.RoleService;
 import io.github.zornx5.domain.service.UserService;
+import io.github.zornx5.infrastructure.common.enums.UserGender;
+import io.github.zornx5.infrastructure.common.enums.UserStatus;
 import io.github.zornx5.infrastructure.common.exception.UserNotFoundException;
 import io.github.zornx5.infrastructure.repository.UserQuery;
 import io.github.zornx5.interfaces.assembler.UserResponseAssembler;
-import io.github.zornx5.interfaces.dto.UserChangePasswordRequest;
 import io.github.zornx5.interfaces.dto.UserRegistrationRequest;
 import io.github.zornx5.interfaces.dto.UserResponse;
 import io.github.zornx5.interfaces.dto.UserUpdateRequest;
 import io.github.zornx5.interfaces.facade.UserApi;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -41,11 +45,36 @@ import java.util.Optional;
 @RestController
 @Slf4j
 @Tag(name = "用户 Restful 资源")
-public class UserRestResource<U, PK extends Serializable> implements UserApi<U, PK> {
+public class UserRestResource<U extends User<U, PK>, PK extends Serializable> implements UserApi<U, PK> {
 
     private final UserService<U, PK> userService;
 
     private final RoleService<U, PK> roleService;
+
+    private final PasswordEncoder passwordEncoder;
+
+    @PostConstruct
+    public void init() {
+        var admin = userService.create();
+        admin.setName("admin");
+        admin.setPassword("admin");
+        admin.setEmail("admin@admin.com");
+        admin.setPhone("+86 13988000000");
+        admin.setGender(UserGender.MALE);
+        admin.setStatus(UserStatus.ACTIVE);
+        userService.save(admin);
+        log.info("测试用户：{}", admin);
+
+        var admin1 = userService.create();
+        admin1.setName("admin1");
+        admin1.setPassword(passwordEncoder.encode("admin1"));
+        admin1.setEmail("admin1@admin.com");
+        admin1.setPhone("+86 13988000001");
+        admin1.setGender(UserGender.MALE);
+        admin1.setStatus(UserStatus.ACTIVE);
+        userService.save(admin1);
+        log.info("测试用户1：{}", admin1);
+    }
 
     @Override
     @GetMapping("")
@@ -77,14 +106,7 @@ public class UserRestResource<U, PK extends Serializable> implements UserApi<U, 
 
     @Override
     @DeleteMapping("/{id}")
-    public Void delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) {
         userService.delete((PK) id);
-        return null;
-    }
-
-    @Override
-    @PatchMapping("/current-password")
-    public String changePassword(@RequestBody @Valid UserChangePasswordRequest request) {
-        return null;
     }
 }

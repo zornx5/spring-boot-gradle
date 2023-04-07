@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  *
  * @author zornx5
  */
-public class UserResponseAssembler<U, PK extends Serializable> {
+public class UserResponseAssembler<U extends User<U, PK>, PK extends Serializable> {
 
     public Page<UserResponse<U, PK>> of(Page<User<U, PK>> users) {
         return new PageImpl<>(CollectionUtils.emptyIfNull(users.getContent()).stream()

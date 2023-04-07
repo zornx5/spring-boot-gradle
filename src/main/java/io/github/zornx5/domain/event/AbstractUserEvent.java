@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @author zornx5
  */
 @Getter
-public abstract class AbstractUserEvent<U, PK extends Serializable> extends ApplicationEvent
+public abstract class AbstractUserEvent<U extends User<U, PK>, PK extends Serializable> extends ApplicationEvent
         implements UserEvent<U, PK> {
 
     /**

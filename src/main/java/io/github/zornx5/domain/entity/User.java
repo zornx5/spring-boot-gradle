@@ -14,7 +14,7 @@ import java.util.Collection;
  *
  * @author zornx5
  */
-public interface User<U, PK extends Serializable> extends Expirable<PK, LocalDateTime>,
+public interface User<U extends User<U, PK>, PK extends Serializable> extends Expirable<PK, LocalDateTime>,
         Auditable<U, PK, LocalDateTime>, Nameable<PK>, DomainBuilder.ToBuilder<User.Builder<U, PK>> {
 
     /**
@@ -70,11 +70,13 @@ public interface User<U, PK extends Serializable> extends Expirable<PK, LocalDat
 
     void setRoles(Collection<Role<U, PK>> roles);
 
+    Collection<String> getPermissions();
+
     void addRole(Role<U, PK> role);
 
     void removeRole(Role<U, PK> role);
 
-    interface Builder<U, PK extends Serializable> extends DomainBuilder<User<U, PK>> {
+    interface Builder<U extends User<U, PK>, PK extends Serializable> extends DomainBuilder<User<U, PK>> {
         Builder<U, PK> id(PK id);
 
         Builder<U, PK> name(String name);

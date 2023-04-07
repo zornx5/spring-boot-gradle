@@ -1,6 +1,7 @@
 package io.github.zornx5.domain.service;
 
 import io.github.zornx5.domain.entity.Resource;
+import io.github.zornx5.domain.entity.User;
 import io.github.zornx5.infrastructure.repository.ResourceQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +16,7 @@ import java.util.Optional;
  *
  * @author zornx5
  */
-public interface ResourceService<U, PK extends Serializable> {
+public interface ResourceService<U extends User<U, PK>, PK extends Serializable> {
     /**
      * 创建一个实体对象，仅创建
      *

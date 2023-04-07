@@ -2,6 +2,7 @@ package io.github.zornx5.interfaces.dto;
 
 import io.github.zornx5.domain.entity.Resource;
 import io.github.zornx5.domain.entity.Role;
+import io.github.zornx5.domain.entity.User;
 import io.github.zornx5.infrastructure.common.enums.ResourceType;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
  * @param <PK>             主键
  * @author zornx5
  */
-public record ResourceResponse<U, PK extends Serializable>(
+public record ResourceResponse<U extends User<U, PK>, PK extends Serializable>(
         PK id,
         String name,
         String description,
@@ -45,7 +46,7 @@ public record ResourceResponse<U, PK extends Serializable>(
         Optional<PK> parentId,
         Collection<PK> childrenIds
 ) {
-    public static <U, PK extends Serializable> ResourceResponse<U, PK> of(Resource<U, PK> resource) {
+    public static <U extends User<U, PK>, PK extends Serializable> ResourceResponse<U, PK> of(Resource<U, PK> resource) {
         return new ResourceResponse<>(
                 resource.getId(),
                 resource.getName(),

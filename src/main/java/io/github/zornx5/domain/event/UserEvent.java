@@ -10,7 +10,7 @@ import java.io.Serializable;
  *
  * @author zornx5
  */
-public interface UserEvent<U, PK extends Serializable> extends DomainEvent {
+public interface UserEvent<U extends User<U, PK>, PK extends Serializable> extends DomainEvent {
     /**
      * 获取用户信息
      *

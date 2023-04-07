@@ -3,6 +3,7 @@ package io.github.zornx5.domain.entity.jpa;
 import io.github.zornx5.domain.entity.AbstractResource;
 import io.github.zornx5.domain.entity.Resource;
 import io.github.zornx5.domain.entity.Role;
+import io.github.zornx5.domain.entity.User;
 import io.github.zornx5.infrastructure.common.enums.ResourceType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -16,9 +17,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 
+import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * 资源实体
@@ -71,6 +75,24 @@ public class JpaResource extends AbstractResource<JpaUser, Long> {
         var target = new JpaResource();
         BeanUtils.copyProperties(resource, target);
         return target;
+    }
+
+    private static <U extends User<U, PK>, PK extends Serializable> void getChildrenPermission(Collection<Resource<U, PK>> children,
+                                                                                               Collection<String> permissions) {
+        if (CollectionUtils.isNotEmpty(children)) {
+            for (Resource<U, PK> child : children) {
+                permissions.add(child.getPermission());
+                getChildrenPermission(child.getChildren(), permissions);
+            }
+        }
+    }
+
+    @Override
+    public Collection<String> getPermissions() {
+        HashSet<String> permissions = new HashSet<>();
+        permissions.add(this.getPermission());
+        getChildrenPermission(this.getChildren(), permissions);
+        return permissions;
     }
 
     @Override

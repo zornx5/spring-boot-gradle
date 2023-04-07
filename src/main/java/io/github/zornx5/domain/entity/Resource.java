@@ -13,7 +13,7 @@ import java.util.Collection;
  *
  * @author zornx5
  */
-public interface Resource<U, PK extends Serializable> extends Nameable<PK>,
+public interface Resource<U extends User<U, PK>, PK extends Serializable> extends Nameable<PK>,
         Auditable<U, PK, LocalDateTime>, DomainBuilder.ToBuilder<Resource.Builder<U, PK>> {
 
     void init();
@@ -25,6 +25,8 @@ public interface Resource<U, PK extends Serializable> extends Nameable<PK>,
     String getPermission();
 
     void setPermission(String permission);
+
+    Collection<String> getPermissions();
 
     String getIcon();
 
@@ -46,7 +48,7 @@ public interface Resource<U, PK extends Serializable> extends Nameable<PK>,
 
     void removeChild(Resource<U, PK> resource);
 
-    interface Builder<U, PK extends Serializable> extends DomainBuilder<Resource<U, PK>> {
+    interface Builder<U extends User<U, PK>, PK extends Serializable> extends DomainBuilder<Resource<U, PK>> {
         Builder<U, PK> id(PK id);
 
         Builder<U, PK> name(String name);

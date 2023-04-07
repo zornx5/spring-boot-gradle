@@ -1,5 +1,6 @@
 package io.github.zornx5.application.event.subscribe;
 
+import io.github.zornx5.domain.entity.User;
 import io.github.zornx5.domain.event.UserDeletedEvent;
 import io.github.zornx5.domain.event.UserLoggedInEvent;
 import io.github.zornx5.domain.event.UserLoggedOutEvent;
@@ -19,7 +20,7 @@ import java.io.Serializable;
  */
 @Component
 @Slf4j
-public class UserListener<U, PK extends Serializable> {
+public class UserListener<U extends User<U, PK>, PK extends Serializable> {
 
     @EventListener
     public void onUserRegistered(UserRegisteredEvent<U, PK> event) {

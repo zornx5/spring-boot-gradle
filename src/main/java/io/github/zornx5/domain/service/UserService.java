@@ -15,7 +15,7 @@ import java.util.Optional;
  *
  * @author zornx5
  */
-public interface UserService<U, PK extends Serializable> {
+public interface UserService<U extends User<U, PK>, PK extends Serializable> {
 
     /**
      * 创建一个实体对象，仅创建

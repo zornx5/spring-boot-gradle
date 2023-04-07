@@ -1,5 +1,6 @@
 package io.github.zornx5.interfaces.facade.rest;
 
+import io.github.zornx5.domain.entity.User;
 import io.github.zornx5.domain.service.ResourceService;
 import io.github.zornx5.domain.service.RoleService;
 import io.github.zornx5.infrastructure.common.exception.RoleNotFoundException;
@@ -40,7 +41,7 @@ import java.util.Optional;
 @RestController
 @Slf4j
 @Tag(name = "角色 Restful 资源")
-public class RoleRestResource<U, PK extends Serializable> implements RoleApi<U, PK> {
+public class RoleRestResource<U extends User<U, PK>, PK extends Serializable> implements RoleApi<U, PK> {
 
     private final RoleService<U, PK> roleService;
 
@@ -76,8 +77,7 @@ public class RoleRestResource<U, PK extends Serializable> implements RoleApi<U, 
 
     @Override
     @DeleteMapping("/{id}")
-    public Void delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) {
         roleService.delete((PK) id);
-        return null;
     }
 }

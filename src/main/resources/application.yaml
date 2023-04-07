@@ -20,3 +20,12 @@ spring:
 #    password: test_password
 server:
   port: 8800
+
+application:
+  security:
+    jwt:
+      issuer: ZornX5
+      secret-key: 404E635266556A586E327235753T782F413F4428472B4B6250645367566B5970
+      expiration: 5
+      refresh-token:
+        expiration: 30

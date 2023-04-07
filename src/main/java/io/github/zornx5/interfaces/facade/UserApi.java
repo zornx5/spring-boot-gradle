@@ -1,7 +1,7 @@
 package io.github.zornx5.interfaces.facade;
 
+import io.github.zornx5.domain.entity.User;
 import io.github.zornx5.infrastructure.repository.UserQuery;
-import io.github.zornx5.interfaces.dto.UserChangePasswordRequest;
 import io.github.zornx5.interfaces.dto.UserRegistrationRequest;
 import io.github.zornx5.interfaces.dto.UserResponse;
 import io.github.zornx5.interfaces.dto.UserUpdateRequest;
@@ -16,7 +16,7 @@ import java.util.Optional;
  *
  * @author zornx5
  */
-public interface UserApi<U, PK extends Serializable> {
+public interface UserApi<U extends User<U, PK>, PK extends Serializable> {
     /**
      * 分页获取用户列表集合
      *
@@ -54,15 +54,6 @@ public interface UserApi<U, PK extends Serializable> {
      * 删除用户
      *
      * @param id 用户唯一标识
-     * @return 是否删除
      */
-    Void delete(Long id);
-
-    /**
-     * 修改当前用户密码
-     *
-     * @param request 修改用户密码请求
-     * @return 修改后的密码
-     */
-    String changePassword(UserChangePasswordRequest request);
+    void delete(Long id);
 }

@@ -11,7 +11,7 @@ import java.util.Collection;
  * @author zornx5
  */
 @MappedSuperclass
-public abstract class AbstractRole<U, PK extends Serializable> extends AbstractNameable<U, PK>
+public abstract class AbstractRole<U extends User<U, PK>, PK extends Serializable> extends AbstractNameable<U, PK>
         implements Role<U, PK> {
 
     private static final long serialVersionUID = 14130110092L;
@@ -26,7 +26,7 @@ public abstract class AbstractRole<U, PK extends Serializable> extends AbstractN
         };
     }
 
-    protected abstract static class AbstractBuilder<U, PK extends Serializable> implements Builder<U, PK> {
+    protected abstract static class AbstractBuilder<U extends User<U, PK>, PK extends Serializable> implements Builder<U, PK> {
 
         private final AbstractRole<U, PK> role;
 

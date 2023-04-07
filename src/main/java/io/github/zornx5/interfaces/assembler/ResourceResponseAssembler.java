@@ -1,6 +1,7 @@
 package io.github.zornx5.interfaces.assembler;
 
 import io.github.zornx5.domain.entity.Resource;
+import io.github.zornx5.domain.entity.User;
 import io.github.zornx5.interfaces.dto.ResourceResponse;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.Page;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
  *
  * @author zornx5
  */
-public class ResourceResponseAssembler<U, PK extends Serializable> {
+public class ResourceResponseAssembler<U extends User<U, PK>, PK extends Serializable> {
     public Page<ResourceResponse<U, PK>> of(Page<Resource<U, PK>> resources) {
         return new PageImpl<>(CollectionUtils.emptyIfNull(resources.getContent()).stream()
                 .map(ResourceResponse::of)

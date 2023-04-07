@@ -1,6 +1,7 @@
 package io.github.zornx5.domain.event;
 
 import io.github.zornx5.domain.entity.Resource;
+import io.github.zornx5.domain.entity.User;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
@@ -12,7 +13,7 @@ import java.io.Serializable;
  * @author zornx5
  */
 @Getter
-public abstract class AbstractResourceEvent<U, PK extends Serializable> extends ApplicationEvent
+public abstract class AbstractResourceEvent<U extends User<U, PK>, PK extends Serializable> extends ApplicationEvent
         implements ResourceEvent<U, PK> {
 
     /**

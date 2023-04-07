@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @author zornx5
  */
 @MappedSuperclass
-public abstract class AbstractResource<U, PK extends Serializable> extends AbstractNameable<U, PK>
+public abstract class AbstractResource<U extends User<U, PK>, PK extends Serializable> extends AbstractNameable<U, PK>
         implements Resource<U, PK> {
 
     private static final long serialVersionUID = 14130110092L;
@@ -27,7 +27,7 @@ public abstract class AbstractResource<U, PK extends Serializable> extends Abstr
         };
     }
 
-    protected abstract static class AbstractBuilder<U, PK extends Serializable> implements Builder<U, PK> {
+    protected abstract static class AbstractBuilder<U extends User<U, PK>, PK extends Serializable> implements Builder<U, PK> {
 
         private final AbstractResource<U, PK> resource;
 

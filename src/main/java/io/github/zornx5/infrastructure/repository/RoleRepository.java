@@ -1,6 +1,7 @@
 package io.github.zornx5.infrastructure.repository;
 
 import io.github.zornx5.domain.entity.Role;
+import io.github.zornx5.domain.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -14,7 +15,7 @@ import java.util.Optional;
  *
  * @author zornx5
  */
-public interface RoleRepository<U, PK extends Serializable> {
+public interface RoleRepository<U extends User<U, PK>, PK extends Serializable> {
 
     /**
      * 创建一个实体对象，仅创建

@@ -14,7 +14,7 @@ import java.util.Collection;
  * @author zornx5
  */
 @MappedSuperclass
-public abstract class AbstractUser<U, PK extends Serializable> extends AbstractExpirable<U, PK>
+public abstract class AbstractUser<U extends User<U, PK>, PK extends Serializable> extends AbstractExpirable<U, PK>
         implements User<U, PK> {
 
     private static final long serialVersionUID = 14130110092L;
@@ -30,7 +30,7 @@ public abstract class AbstractUser<U, PK extends Serializable> extends AbstractE
         };
     }
 
-    protected abstract static class AbstractBuilder<U, PK extends Serializable> implements Builder<U, PK> {
+    protected abstract static class AbstractBuilder<U extends User<U, PK>, PK extends Serializable> implements Builder<U, PK> {
 
         private final AbstractUser<U, PK> user;
 

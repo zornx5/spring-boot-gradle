@@ -8,6 +8,7 @@ import io.github.zornx5.infrastructure.common.enums.UserStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -16,9 +17,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * 用户实体
@@ -62,7 +65,7 @@ public class JpaUser extends AbstractUser<JpaUser, Long> {
     @Column(nullable = false)
     private UserStatus status;
 
-    @ManyToMany(cascade = CascadeType.MERGE, targetEntity = JpaRole.class)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE, targetEntity = JpaRole.class)
     @JoinTable(
             name = "t_users_roles",
             joinColumns = {@JoinColumn(name = "user_id")},
@@ -84,6 +87,18 @@ public class JpaUser extends AbstractUser<JpaUser, Long> {
         BeanUtils.copyProperties(user, target);
         return target;
     }
+
+    @Override
+    public Collection<String> getPermissions() {
+        HashSet<String> permissions = new HashSet<>();
+        if (CollectionUtils.isNotEmpty(this.getRoles())) {
+            for (Role<JpaUser, Long> role : this.getRoles()) {
+                permissions.addAll(role.getPermissions());
+            }
+        }
+        return permissions;
+    }
+
 
     @Override
     public void addRole(Role<JpaUser, Long> role) {

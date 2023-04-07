@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @param <PK>             主键
  * @author zornx5
  */
-public record RoleResponse<U, PK extends Serializable>(
+public record RoleResponse<U extends User<U, PK>, PK extends Serializable>(
         PK id,
         String name,
         String description,
@@ -36,7 +36,7 @@ public record RoleResponse<U, PK extends Serializable>(
         Collection<PK> userIds,
         Collection<PK> resourceIds
 ) {
-    public static <U, PK extends Serializable> RoleResponse<U, PK> of(Role<U, PK> role) {
+    public static <U extends User<U, PK>, PK extends Serializable> RoleResponse<U, PK> of(Role<U, PK> role) {
         return new RoleResponse<>(
                 role.getId(),
                 role.getName(),

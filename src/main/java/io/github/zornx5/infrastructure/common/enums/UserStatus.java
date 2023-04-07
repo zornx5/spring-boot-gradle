@@ -29,7 +29,12 @@ public enum UserStatus implements Status {
     /**
      * 过期的
      */
-    EXPIRED;
+    EXPIRED,
+
+    /**
+     * 不登陆的
+     */
+    NO_LOGIN;
 
     public static Set<UserStatus> of(Collection<String> userGenders) {
         Collection<String> emptyIfNull = Objects.isNull(userGenders) ? Collections.emptySet() : userGenders;
