@@ -8,6 +8,7 @@ import io.github.zornx5.infrastructure.common.exception.RoleNotFoundException;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -51,7 +52,7 @@ public record UserRegistrationRequest<U extends User<U, PK>, PK extends Serializ
         LocalDateTime expiredDate,
         Set<Long> roleIds
 ) {
-    public User<U, PK> assignTo(User<U, PK> user, RoleService<U, PK> roleService) {
+    public User<U, PK> assignTo(User<U, PK> user, PasswordEncoder passwordEncoder, RoleService<U, PK> roleService) {
         return user.toBuilder()
                 .name(this.username)
                 .description(this.description)
@@ -64,7 +65,7 @@ public record UserRegistrationRequest<U extends User<U, PK>, PK extends Serializ
                 .phone(this.phone)
                 .address(this.address)
                 .status(this.status)
-                .password(this.password)
+                .password(passwordEncoder.encode(this.password))
                 .expiredTime(this.expiredDate)
                 .roles(CollectionUtils.emptyIfNull(this.roleIds)
                         .stream()

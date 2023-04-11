@@ -1,9 +1,14 @@
 package io.github.zornx5.domain.service;
 
-import com.google.common.net.HttpHeaders;
 import io.github.zornx5.domain.entity.User;
+import io.github.zornx5.domain.event.ImmutableUserLoggedInEvent;
+import io.github.zornx5.domain.event.ImmutableUserLoggedOutEvent;
+import io.github.zornx5.domain.event.ImmutableUserLoginFailedAttemptsIncrementedEvent;
 import io.github.zornx5.infrastructure.JwtService;
 import io.github.zornx5.infrastructure.JwtUserDetails;
+import io.github.zornx5.infrastructure.common.enums.ResponseStatus;
+import io.github.zornx5.infrastructure.common.exception.BaseException;
+import io.github.zornx5.infrastructure.common.exception.UserException;
 import io.github.zornx5.infrastructure.common.exception.UserNotFoundException;
 import io.github.zornx5.infrastructure.repository.UserQuery;
 import io.github.zornx5.interfaces.dto.UserChangePasswordRequest;
@@ -19,13 +24,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.util.Optional;
 
-import static io.github.zornx5.infrastructure.filter.JwtAuthenticationFilter.BEARER;
+import static io.github.zornx5.infrastructure.util.TokenUtil.getAuthorizationToken;
 
 /**
  * 角色服务实现
@@ -44,6 +55,8 @@ public class AuthServiceImpl<U extends User<U, PK>, PK extends Serializable>
 
     private final UserService<U, PK> userService;
 
+    private final PasswordEncoder passwordEncoder;
+
     private ApplicationEventPublisher eventPublisher;
 
     @Override
@@ -53,32 +66,60 @@ public class AuthServiceImpl<U extends User<U, PK>, PK extends Serializable>
 
     @Override
     public UsernameLoginResponse login(UsernameLoginRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.username(),
-                        request.password()
-                )
-        );
-        var user = userService.findByQuery(UserQuery.nameOf(request.username()))
-                .orElseThrow(UserNotFoundException::new);
-        var userDetails = new JwtUserDetails<>(user);
-        var token = jwtService.generateToken(userDetails);
-        var refreshToken = jwtService.generateRefreshToken(userDetails);
-        return new UsernameLoginResponse(user.getName(), token, refreshToken);
+        Optional<User<U, PK>> upkUser = userService.findByQuery(UserQuery.nameOf(request.username()));
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    request.username(),
+                    request.password()
+            ));
+        } catch (BadCredentialsException e) {
+            upkUser.ifPresent(user -> {
+                        log.debug("推送用户登陆失败次数增加事件");
+                        eventPublisher.publishEvent(new ImmutableUserLoginFailedAttemptsIncrementedEvent<>(user));
+                    }
+            );
+            throw new BaseException(ResponseStatus.BAD_CREDENTIALS, e);
+        } catch (DisabledException e) {
+            throw new UserException(ResponseStatus.USER_DISABLED, e);
+        } catch (LockedException e) {
+            throw new UserException(ResponseStatus.USER_LOCKED, e);
+        } catch (Exception e) {
+            throw new BaseException(ResponseStatus.ERROR, e);
+        }
+        if (upkUser.isPresent()) {
+            var userDetails = new JwtUserDetails<>(upkUser.get());
+            var token = jwtService.generateToken(userDetails);
+            var refreshToken = jwtService.generateRefreshToken(userDetails);
+            eventPublisher.publishEvent(new ImmutableUserLoggedInEvent<>(upkUser.get()));
+            return new UsernameLoginResponse(upkUser.get().getName(), token, refreshToken);
+        } else {
+            throw new UserNotFoundException(request.username());
+        }
     }
 
     @Override
     public void logout() {
-
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional.ofNullable(authentication.getPrincipal()).ifPresentOrElse(
+                userDetails -> {
+                    if (userDetails instanceof JwtUserDetails) {
+                        JwtUserDetails<U, PK> jwtUserDetails = (JwtUserDetails<U, PK>) userDetails;
+                        SecurityContextHolder.clearContext();
+                        eventPublisher.publishEvent(new ImmutableUserLoggedOutEvent<>(jwtUserDetails.getUser()));
+                    } else {
+                        throw new UnsupportedOperationException();
+                    }
+                },
+                () -> {
+                    throw new BaseException(ResponseStatus.BAD_CREDENTIALS);
+                }
+        );
     }
 
     @Override
     public UsernameLoginResponse refreshToken(HttpServletRequest request) {
-        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (authHeader == null || !authHeader.trim().startsWith(BEARER)) {
-            return null;
-        }
-        final String refreshToken = authHeader.replace(BEARER, "").trim();
+        String refreshToken = getAuthorizationToken(request)
+                .orElseThrow(() -> new BaseException(ResponseStatus.BAD_CREDENTIALS));
         final String subject = jwtService.extractSubject(refreshToken);
         if (subject != null) {
             var user = userService.findByQuery(UserQuery.nameOf(subject))
@@ -111,7 +152,7 @@ public class AuthServiceImpl<U extends User<U, PK>, PK extends Serializable>
         );
         var user = userService.findByQuery(UserQuery.nameOf(authentication.getName()))
                 .orElseThrow(UserNotFoundException::new);
-        user.setPassword(request.newPassword());
+        user.setPassword(passwordEncoder.encode(request.newPassword()));
         var saveUser = userService.save(user);
         return new UserChangePasswordResponse(saveUser.getName(), request.newPassword());
     }

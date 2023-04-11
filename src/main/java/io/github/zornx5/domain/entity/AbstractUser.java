@@ -21,6 +21,16 @@ public abstract class AbstractUser<U extends User<U, PK>, PK extends Serializabl
 
     @Override
     public void init() {
+        this.loginFailedAttemptsReset();
+    }
+
+    @Override
+    public void loginFailedAttemptsIncrement() {
+        this.setLoginFailedAttempts(this.getLoginFailedAttempts() + 1);
+    }
+
+    @Override
+    public void loginFailedAttemptsReset() {
         this.setLoginFailedAttempts(0);
     }
 

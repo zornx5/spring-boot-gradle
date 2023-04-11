@@ -2,6 +2,7 @@ package io.github.zornx5.infrastructure;
 
 import io.github.zornx5.domain.entity.Role;
 import io.github.zornx5.domain.entity.User;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 
+@Data
 @RequiredArgsConstructor
 public class JwtUserDetails<U extends User<U, PK>, PK extends Serializable> implements UserDetails {
 

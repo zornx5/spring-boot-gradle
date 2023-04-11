@@ -70,6 +70,10 @@ public interface User<U extends User<U, PK>, PK extends Serializable> extends Ex
 
     void setRoles(Collection<Role<U, PK>> roles);
 
+    void loginFailedAttemptsIncrement();
+
+    void loginFailedAttemptsReset();
+
     Collection<String> getPermissions();
 
     void addRole(Role<U, PK> role);

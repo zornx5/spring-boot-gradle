@@ -64,6 +64,7 @@ public class JwtService {
 
         return Jwts
                 .builder()
+                .setHeaderParam("type", "jwt")
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuer(issuer)
@@ -74,8 +75,8 @@ public class JwtService {
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = extractSubject(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        final String subject = extractSubject(token);
+        return (subject.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {

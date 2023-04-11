@@ -37,10 +37,9 @@ public enum ResponseStatus {
      * 0101xx
      * 01 - 系统 -- 01 - 鉴权
      */
-    VERIFY_JWT_FAILED("010101", HttpStatus.UNAUTHORIZED, "token验证失败"),
+    BAD_CREDENTIALS("010101", HttpStatus.UNAUTHORIZED, "凭证验证失败"),
 
     PASSWORD_NOT_MATCH("010102", HttpStatus.PRECONDITION_FAILED, "密码不匹配"),
-
 
     /**
      * 0102xx
@@ -49,6 +48,10 @@ public enum ResponseStatus {
     USER_EXIST("010201", HttpStatus.BAD_REQUEST, "用户已存在"),
 
     USER_NOT_FOUND("010202", HttpStatus.NOT_FOUND, "用户未找到"),
+
+    USER_DISABLED("010203", HttpStatus.FORBIDDEN, "用户已禁用"),
+
+    USER_LOCKED("010204", HttpStatus.FORBIDDEN, "用户已锁定"),
 
     /**
      * 0103xx

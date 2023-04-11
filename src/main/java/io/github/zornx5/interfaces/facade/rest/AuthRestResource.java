@@ -39,7 +39,7 @@ public class AuthRestResource<U extends User<U, PK>, PK extends Serializable> im
 
     @Override
     @PostMapping("/login")
-    public UsernameLoginResponse login(UsernameLoginRequest request) {
+    public UsernameLoginResponse login(@RequestBody UsernameLoginRequest request) {
         return authService.login(request);
     }
 

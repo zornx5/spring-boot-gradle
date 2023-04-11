@@ -2,7 +2,6 @@ package io.github.zornx5.infrastructure;
 
 import io.github.zornx5.domain.entity.User;
 import io.github.zornx5.domain.service.UserService;
-import io.github.zornx5.infrastructure.common.exception.UserNotFoundException;
 import io.github.zornx5.infrastructure.repository.UserQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,8 @@ public class JwtUserDetailsService<U extends User<U, PK>, PK extends Serializabl
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User<U, PK> user = userService.findByQuery(UserQuery.nameOf(username)).orElseThrow(UserNotFoundException::new);
+        User<U, PK> user = userService.findByQuery(UserQuery.nameOf(username))
+                .orElseThrow(() -> new UsernameNotFoundException(username));
         return new JwtUserDetails<>(user);
     }
 }

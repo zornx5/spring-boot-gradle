@@ -1,6 +1,5 @@
 package io.github.zornx5.infrastructure.filter;
 
-import com.google.common.net.HttpHeaders;
 import io.github.zornx5.infrastructure.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -17,9 +16,9 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import java.io.IOException;
 
-public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
+import static io.github.zornx5.infrastructure.util.TokenUtil.getAuthorizationToken;
 
-    public static final String BEARER = "Bearer";
+public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
     private final JwtService jwtService;
 
@@ -38,29 +37,23 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        final String jwtToken;
-        if (authHeader == null || !authHeader.trim().startsWith(BEARER)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        jwtToken = authHeader.replace(BEARER, "").trim();
-        final String subject;
-        subject = jwtService.extractSubject(jwtToken);
-        if (subject != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(subject);
-            if (jwtService.isTokenValid(jwtToken, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        jwtToken,
-                        userDetails.getAuthorities()
-                );
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+        getAuthorizationToken(request).ifPresent(token -> {
+            final String subject = jwtService.extractSubject(token);
+            if (subject != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(subject);
+                if (jwtService.isTokenValid(token, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            token,
+                            userDetails.getAuthorities()
+                    );
+                    authToken.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(request)
+                    );
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
             }
-        }
+        });
         filterChain.doFilter(request, response);
     }
 }

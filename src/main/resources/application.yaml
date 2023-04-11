@@ -29,3 +29,7 @@ application:
       expiration: 5
       refresh-token:
         expiration: 30
+
+logging:
+  level:
+    io.github.zornx5: debug

@@ -88,7 +88,7 @@ public class SpringSecurityConfiguration {
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers(HttpMethod.GET, SWAGGER_WHITELIST).permitAll()
                 .requestMatchers("/auth/login").permitAll()
-                .requestMatchers("/users").permitAll()
+                .requestMatchers("/h2-console").permitAll()
                 .anyRequest().authenticated()
                 // 禁用 Session
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

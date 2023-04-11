@@ -56,7 +56,6 @@ public class UserServiceImpl<U extends User<U, PK>, PK extends Serializable>
 
     @Override
     public User<U, PK> save(User<U, PK> entity) {
-        entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         User<U, PK> user = userRepository.save(entity);
         eventPublisher.publishEvent(new ImmutableUserRegisteredEvent<>(user));
         return user;

@@ -13,8 +13,9 @@ import java.io.Serializable;
  */
 @EqualsAndHashCode(callSuper = true)
 @Value
-public class ImmutableUserLoginFailedAttemptsIncrementedEvent<U extends User<U, PK>, PK extends Serializable> extends AbstractUserEvent<U, PK>
-        implements UserLoggedInEvent<U, PK> {
+public class ImmutableUserLoginFailedAttemptsIncrementedEvent<U extends User<U, PK>, PK extends Serializable>
+        extends AbstractUserEvent<U, PK>
+        implements UserLoginFailedAttemptsIncrementedEvent<U, PK> {
     public ImmutableUserLoginFailedAttemptsIncrementedEvent(User<U, PK> user) {
         super(user);
     }
