@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -51,8 +50,6 @@ public class UserRestResource<U extends User<U, PK>, PK extends Serializable> im
 
     private final RoleService<U, PK> roleService;
 
-    private final PasswordEncoder passwordEncoder;
-
     @PostConstruct
     public void init() {
         var admin = userService.create();
@@ -67,7 +64,7 @@ public class UserRestResource<U extends User<U, PK>, PK extends Serializable> im
 
         var admin1 = userService.create();
         admin1.setName("admin1");
-        admin1.setPassword(passwordEncoder.encode("admin1"));
+        admin1.setPassword("admin1");
         admin1.setEmail("admin1@admin.com");
         admin1.setPhone("+86 13988000001");
         admin1.setGender(UserGender.MALE);

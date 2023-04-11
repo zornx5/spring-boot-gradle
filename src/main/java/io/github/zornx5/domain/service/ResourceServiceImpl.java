@@ -9,7 +9,6 @@ import io.github.zornx5.infrastructure.common.exception.ResourceNotFoundExceptio
 import io.github.zornx5.infrastructure.repository.ResourceQuery;
 import io.github.zornx5.infrastructure.repository.ResourceRepository;
 import jakarta.annotation.Nonnull;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,11 +41,6 @@ public class ResourceServiceImpl<U extends User<U, PK>, PK extends Serializable>
     @Override
     public void setApplicationEventPublisher(@Nonnull ApplicationEventPublisher applicationEventPublisher) {
         this.eventPublisher = applicationEventPublisher;
-    }
-
-    @PostConstruct
-    private void init() {
-
     }
 
     @Override

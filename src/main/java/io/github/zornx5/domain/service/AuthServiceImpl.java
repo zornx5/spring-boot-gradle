@@ -21,7 +21,6 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -38,8 +37,6 @@ import static io.github.zornx5.infrastructure.filter.JwtAuthenticationFilter.BEA
 @Slf4j
 public class AuthServiceImpl<U extends User<U, PK>, PK extends Serializable>
         implements ApplicationEventPublisherAware, AuthService<U, PK> {
-
-    private final PasswordEncoder passwordEncoder;
 
     private final JwtService jwtService;
 
@@ -114,7 +111,7 @@ public class AuthServiceImpl<U extends User<U, PK>, PK extends Serializable>
         );
         var user = userService.findByQuery(UserQuery.nameOf(authentication.getName()))
                 .orElseThrow(UserNotFoundException::new);
-        user.setPassword(passwordEncoder.encode(request.newPassword()));
+        user.setPassword(request.newPassword());
         var saveUser = userService.save(user);
         return new UserChangePasswordResponse(saveUser.getName(), request.newPassword());
     }

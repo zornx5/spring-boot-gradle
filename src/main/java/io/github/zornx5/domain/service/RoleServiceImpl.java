@@ -9,7 +9,6 @@ import io.github.zornx5.infrastructure.common.exception.RoleNotFoundException;
 import io.github.zornx5.infrastructure.repository.RoleQuery;
 import io.github.zornx5.infrastructure.repository.RoleRepository;
 import jakarta.annotation.Nonnull;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,11 +41,6 @@ public class RoleServiceImpl<U extends User<U, PK>, PK extends Serializable>
     @Override
     public void setApplicationEventPublisher(@Nonnull ApplicationEventPublisher applicationEventPublisher) {
         this.eventPublisher = applicationEventPublisher;
-    }
-
-    @PostConstruct
-    private void init() {
-
     }
 
     @Override

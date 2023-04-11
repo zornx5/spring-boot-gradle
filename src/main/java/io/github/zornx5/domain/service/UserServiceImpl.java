@@ -15,6 +15,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -34,7 +35,7 @@ public class UserServiceImpl<U extends User<U, PK>, PK extends Serializable>
         implements ApplicationEventPublisherAware, UserService<U, PK> {
     private final UserRepository<U, PK> userRepository;
 
-//    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     private ApplicationEventPublisher eventPublisher;
 
@@ -55,7 +56,7 @@ public class UserServiceImpl<U extends User<U, PK>, PK extends Serializable>
 
     @Override
     public User<U, PK> save(User<U, PK> entity) {
-//        entity.setPassword(passwordEncoder.encode(entity.getPassword()));
+        entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         User<U, PK> user = userRepository.save(entity);
         eventPublisher.publishEvent(new ImmutableUserRegisteredEvent<>(user));
         return user;
