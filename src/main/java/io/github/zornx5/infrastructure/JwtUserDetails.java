@@ -11,8 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Data
 @RequiredArgsConstructor
@@ -22,15 +21,11 @@ public class JwtUserDetails<U extends User<U, PK>, PK extends Serializable> impl
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        HashSet<SimpleGrantedAuthority> simpleGrantedAuthorities = new HashSet<>();
-        if (!Objects.isNull(user.getRoles())) {
-            for (Object object : user.getRoles()) {
-                if (object instanceof Role<?, ?> role) {
-                    simpleGrantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
-                }
-            }
-        }
-        return simpleGrantedAuthorities;
+        return user.getRoles().stream()
+                .filter(Role.class::isInstance)
+                .map(Role.class::cast)
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -46,7 +41,9 @@ public class JwtUserDetails<U extends User<U, PK>, PK extends Serializable> impl
     @Override
     public boolean isAccountNonExpired() {
         LocalDateTime now = LocalDateTime.now();
-        return !now.isBefore(user.getExpiredDate().orElse(now));
+        return user.getExpiredDate()
+                .map(expiredDate -> !now.isBefore(expiredDate))
+                .orElse(true);
     }
 
     @Override

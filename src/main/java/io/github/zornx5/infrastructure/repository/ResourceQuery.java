@@ -1,6 +1,6 @@
 package io.github.zornx5.infrastructure.repository;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * 资源搜素

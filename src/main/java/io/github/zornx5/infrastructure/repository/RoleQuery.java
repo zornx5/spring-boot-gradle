@@ -1,5 +1,7 @@
 package io.github.zornx5.infrastructure.repository;
 
+import jakarta.annotation.Nullable;
+
 /**
  * 角色搜素
  *
@@ -16,6 +18,7 @@ public interface RoleQuery {
         };
     }
 
+    @Nullable
     default String getName() {
         return null;
     }

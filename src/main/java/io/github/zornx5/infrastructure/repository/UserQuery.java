@@ -1,5 +1,7 @@
 package io.github.zornx5.infrastructure.repository;
 
+import jakarta.annotation.Nullable;
+
 /**
  * 用户搜素
  *
@@ -34,14 +36,17 @@ public interface UserQuery {
         };
     }
 
+    @Nullable
     default String getName() {
         return null;
     }
 
+    @Nullable
     default String getPhone() {
         return null;
     }
 
+    @Nullable
     default String getEmail() {
         return null;
     }

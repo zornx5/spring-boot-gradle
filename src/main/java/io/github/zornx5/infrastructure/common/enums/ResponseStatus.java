@@ -16,6 +16,7 @@ import java.util.Objects;
  */
 @Getter
 public enum ResponseStatus {
+
     /**
      * 成功
      */
@@ -67,19 +68,31 @@ public enum ResponseStatus {
      */
     RESOURCE_EXIST("010401", HttpStatus.BAD_REQUEST, "资源已存在"),
 
-    RESOURCE_NOT_FOUND("010402", HttpStatus.NOT_FOUND, "资源未找到"),
-    ;
+    RESOURCE_NOT_FOUND("010402", HttpStatus.NOT_FOUND, "资源未找到");
 
     private final String code;
     private final HttpStatus status;
     private final String message;
 
+    /**
+     * 构造函数
+     *
+     * @param code    响应码
+     * @param status  HTTP状态码
+     * @param message 响应信息
+     */
     ResponseStatus(String code, HttpStatus status, String message) {
         this.code = code;
         this.status = status;
         this.message = message;
     }
 
+    /**
+     * 根据响应码获取响应状态
+     *
+     * @param code 响应码
+     * @return 响应状态
+     */
     public static ResponseStatus of(String code) {
         for (ResponseStatus responseStatus : ResponseStatus.values()) {
             if (Objects.equals(code, responseStatus.getCode())) {

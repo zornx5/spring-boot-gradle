@@ -91,17 +91,23 @@ public class SpringSecurityConfiguration {
                 .requestMatchers("/h2-console").permitAll()
                 .anyRequest().authenticated()
                 // 禁用 Session
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                // 添加过滤器
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(
                         authenticationManager(),
                         SpringSecurityConfiguration::authenticationEntryPoint,
                         userDetailsService,
                         jwtService), UsernamePasswordAuthenticationFilter.class)
+                // 注销
                 .logout()
                 .logoutUrl("/auth/logout")
                 .logoutSuccessHandler(SpringSecurityConfiguration::onLogoutSuccess)
-                .and().exceptionHandling()
+                // 异常处理
+                .and()
+                .exceptionHandling()
                 .accessDeniedHandler(SpringSecurityConfiguration::accessDeniedHandler)
                 .authenticationEntryPoint(SpringSecurityConfiguration::authenticationEntryPoint)
         ;
