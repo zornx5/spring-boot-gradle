@@ -1,5 +1,7 @@
 package io.github.zornx5.domain.entity.jpa;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.github.zornx5.domain.entity.AbstractRole;
 import io.github.zornx5.domain.entity.Resource;
 import io.github.zornx5.domain.entity.Role;
@@ -17,6 +19,7 @@ import lombok.ToString;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -32,9 +35,12 @@ import java.util.HashSet;
 @Table(name = "t_roles")
 @ToString
 public class JpaRole extends AbstractRole<JpaUser, Long> {
+
+    @Serial
     private static final long serialVersionUID = 14130110092L;
 
     @ManyToMany(mappedBy = "roles", targetEntity = JpaUser.class)
+    @JsonBackReference
     @ToString.Exclude
     private Collection<User<JpaUser, Long>> users;
 
@@ -43,6 +49,7 @@ public class JpaRole extends AbstractRole<JpaUser, Long> {
             joinColumns = {@JoinColumn(name = "role_id")},
             inverseJoinColumns = {@JoinColumn(name = "resource_id")}
     )
+    @JsonManagedReference
     @ToString.Exclude
     private Collection<Resource<JpaUser, Long>> resources;
 

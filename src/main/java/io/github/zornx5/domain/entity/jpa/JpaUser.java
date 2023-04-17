@@ -1,5 +1,6 @@
 package io.github.zornx5.domain.entity.jpa;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.github.zornx5.domain.entity.AbstractUser;
 import io.github.zornx5.domain.entity.Role;
 import io.github.zornx5.domain.entity.User;
@@ -20,6 +21,7 @@ import lombok.ToString;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -36,6 +38,7 @@ import java.util.HashSet;
 @ToString
 public class JpaUser extends AbstractUser<JpaUser, Long> {
 
+    @Serial
     private static final long serialVersionUID = 14130110092L;
 
     private String firstName;
@@ -72,6 +75,7 @@ public class JpaUser extends AbstractUser<JpaUser, Long> {
             inverseJoinColumns = {@JoinColumn(name = "role_id")}
     )
     @ToString.Exclude
+    @JsonManagedReference
     private Collection<Role<JpaUser, Long>> roles;
 
     public JpaUser(Long id) {
