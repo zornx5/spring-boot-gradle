@@ -22,7 +22,6 @@ import lombok.ToString;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
@@ -40,7 +39,6 @@ import java.util.HashSet;
 @ToString
 public class JpaResource extends AbstractResource<JpaUser, Long> {
 
-    @Serial
     private static final long serialVersionUID = 14130110092L;
 
     private ResourceType type;

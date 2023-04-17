@@ -55,6 +55,7 @@ public interface User<U extends User<U, PK>, PK extends Serializable> extends Us
 
     void setAddress(String address);
 
+    @Override
     String getPassword();
 
     void setPassword(String password);

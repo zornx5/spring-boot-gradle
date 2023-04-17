@@ -52,12 +52,6 @@ import java.security.interfaces.RSAPublicKey;
 @Slf4j
 public class SpringSecurityConfiguration {
 
-    @Value("${jwt.public.key}")
-    RSAPublicKey publicKey;
-
-    @Value("${jwt.private.key}")
-    RSAPrivateKey privateKey;
-
     /**
      * API 接口白名单
      */
@@ -68,6 +62,12 @@ public class SpringSecurityConfiguration {
             "/v3/api-docs/**",
             "/webjars/swagger-ui/**"
     };
+
+    @Value("${jwt.public.key}")
+    RSAPublicKey publicKey;
+
+    @Value("${jwt.private.key}")
+    RSAPrivateKey privateKey;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

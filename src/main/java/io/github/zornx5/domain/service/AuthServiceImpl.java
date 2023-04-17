@@ -59,19 +59,23 @@ public class AuthServiceImpl<U extends User<U, PK>, PK extends Serializable>
         implements ApplicationEventPublisherAware, AuthService<U, PK> {
 
     private final JwtEncoder encoder;
+
     private final JwtDecoder decoder;
-    @Value("${jwt.issuer:ZornX5}")
-    private String issuer;
-    @Value("${jwt.expiration:5}")
-    private Duration expiration;
-    @Value("${jwt.refresh-expiration:30}")
-    private Duration refreshExpiration;
 
     private final AuthenticationManager authenticationManager;
 
     private final UserService<U, PK> userService;
 
     private final PasswordEncoder passwordEncoder;
+
+    @Value("${jwt.issuer:ZornX5}")
+    private String issuer;
+
+    @Value("${jwt.expiration:5}")
+    private Duration expiration;
+
+    @Value("${jwt.refresh-expiration:30}")
+    private Duration refreshExpiration;
 
     private ApplicationEventPublisher eventPublisher;
 
