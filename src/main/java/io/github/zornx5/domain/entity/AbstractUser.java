@@ -3,10 +3,16 @@ package io.github.zornx5.domain.entity;
 import io.github.zornx5.infrastructure.common.enums.UserGender;
 import io.github.zornx5.infrastructure.common.enums.UserStatus;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Transient;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 抽象用户
@@ -17,7 +23,46 @@ import java.util.Collection;
 public abstract class AbstractUser<U extends User<U, PK>, PK extends Serializable> extends AbstractExpirable<U, PK>
         implements User<U, PK> {
 
+    @Serial
     private static final long serialVersionUID = 14130110092L;
+
+    @Override
+    @Transient
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.getRoles().stream()
+                .filter(Objects::nonNull)
+                .map(Role.class::cast)
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public String getUsername() {
+        return this.getName();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        LocalDateTime now = LocalDateTime.now();
+        return this.getExpiredDate()
+                .map(expiredDate -> !now.isAfter(expiredDate))
+                .orElse(true);
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return this.getStatus().isActive();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.getStatus().isActive();
+    }
 
     @Override
     public void init() {

@@ -4,6 +4,7 @@ import io.github.zornx5.infrastructure.common.DomainBuilder;
 import io.github.zornx5.infrastructure.common.enums.UserGender;
 import io.github.zornx5.infrastructure.common.enums.UserStatus;
 import org.springframework.data.domain.Auditable;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -14,7 +15,7 @@ import java.util.Collection;
  *
  * @author zornx5
  */
-public interface User<U extends User<U, PK>, PK extends Serializable> extends Expirable<PK, LocalDateTime>,
+public interface User<U extends User<U, PK>, PK extends Serializable> extends UserDetails, Expirable<PK, LocalDateTime>,
         Auditable<U, PK, LocalDateTime>, Nameable<PK>, DomainBuilder.ToBuilder<User.Builder<U, PK>> {
 
     /**

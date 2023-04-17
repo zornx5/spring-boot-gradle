@@ -15,7 +15,9 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -32,16 +34,20 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class UserServiceImpl<U extends User<U, PK>, PK extends Serializable>
-        implements ApplicationEventPublisherAware, UserService<U, PK> {
+        implements ApplicationEventPublisherAware, UserDetailsService, UserService<U, PK> {
     private final UserRepository<U, PK> userRepository;
-
-    private final PasswordEncoder passwordEncoder;
 
     private ApplicationEventPublisher eventPublisher;
 
     @Override
     public void setApplicationEventPublisher(@Nonnull ApplicationEventPublisher applicationEventPublisher) {
         this.eventPublisher = applicationEventPublisher;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return findByQuery(UserQuery.nameOf(username))
+                .orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
     @Override

@@ -4,8 +4,6 @@ import io.github.zornx5.domain.entity.User;
 import io.github.zornx5.domain.event.ImmutableUserLoggedInEvent;
 import io.github.zornx5.domain.event.ImmutableUserLoggedOutEvent;
 import io.github.zornx5.domain.event.ImmutableUserLoginFailedAttemptsIncrementedEvent;
-import io.github.zornx5.infrastructure.JwtService;
-import io.github.zornx5.infrastructure.JwtUserDetails;
 import io.github.zornx5.infrastructure.common.enums.ResponseStatus;
 import io.github.zornx5.infrastructure.common.exception.BaseException;
 import io.github.zornx5.infrastructure.common.exception.UserException;
@@ -21,6 +19,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,12 +28,22 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static io.github.zornx5.infrastructure.util.TokenUtil.getAuthorizationToken;
 
@@ -49,7 +58,14 @@ import static io.github.zornx5.infrastructure.util.TokenUtil.getAuthorizationTok
 public class AuthServiceImpl<U extends User<U, PK>, PK extends Serializable>
         implements ApplicationEventPublisherAware, AuthService<U, PK> {
 
-    private final JwtService jwtService;
+    private final JwtEncoder encoder;
+    private final JwtDecoder decoder;
+    @Value("${jwt.issuer:ZornX5}")
+    private String issuer;
+    @Value("${jwt.expiration:5}")
+    private Duration expiration;
+    @Value("${jwt.refresh-expiration:30}")
+    private Duration refreshExpiration;
 
     private final AuthenticationManager authenticationManager;
 
@@ -87,11 +103,34 @@ public class AuthServiceImpl<U extends User<U, PK>, PK extends Serializable>
             throw new BaseException(ResponseStatus.ERROR, e);
         }
         if (upkUser.isPresent()) {
-            var userDetails = new JwtUserDetails<>(upkUser.get());
-            var token = jwtService.generateToken(userDetails);
-            var refreshToken = jwtService.generateRefreshToken(userDetails);
+            Instant now = Instant.now();
+            if (expiration.compareTo(refreshExpiration) > 0) {
+                // expiration can't greater refreshExpiration
+                expiration = refreshExpiration;
+            }
+            // @formatter:off
+            String scope = upkUser.get().getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.joining(" "));
+            JwtClaimsSet claims = JwtClaimsSet.builder()
+                    .issuer(issuer)
+                    .issuedAt(now)
+                    .expiresAt(now.plus(expiration))
+                    .subject(upkUser.get().getName())
+                    .claim("scope", scope)
+                    .build();
+            JwtClaimsSet refreshClaims = JwtClaimsSet.builder()
+                    .issuer(issuer)
+                    .issuedAt(now)
+                    .expiresAt(now.plus(refreshExpiration))
+                    .subject(upkUser.get().getName())
+                    .build();
+            // @formatter:on
+            String accessToken = encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+            // refresh accessToken just can refresh access accessToken
+            String refreshToken = encoder.encode(JwtEncoderParameters.from(refreshClaims)).getTokenValue();
             eventPublisher.publishEvent(new ImmutableUserLoggedInEvent<>(upkUser.get()));
-            return new UsernameLoginResponse(upkUser.get().getName(), token, refreshToken);
+            return new UsernameLoginResponse(upkUser.get().getName(), accessToken, refreshToken);
         } else {
             throw new UserNotFoundException(request.username());
         }
@@ -101,11 +140,10 @@ public class AuthServiceImpl<U extends User<U, PK>, PK extends Serializable>
     public void logout() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Optional.ofNullable(authentication.getPrincipal()).ifPresentOrElse(
-                userDetails -> {
-                    if (userDetails instanceof JwtUserDetails) {
-                        JwtUserDetails<U, PK> jwtUserDetails = (JwtUserDetails<U, PK>) userDetails;
+                user -> {
+                    if (user instanceof User<?, ?> loginUser) {
                         SecurityContextHolder.clearContext();
-                        eventPublisher.publishEvent(new ImmutableUserLoggedOutEvent<>(jwtUserDetails.getUser()));
+                        eventPublisher.publishEvent(new ImmutableUserLoggedOutEvent<>(loginUser));
                     } else {
                         throw new UnsupportedOperationException();
                     }
@@ -120,14 +158,28 @@ public class AuthServiceImpl<U extends User<U, PK>, PK extends Serializable>
     public UsernameLoginResponse refreshToken(HttpServletRequest request) {
         String refreshToken = getAuthorizationToken(request)
                 .orElseThrow(() -> new BaseException(ResponseStatus.BAD_CREDENTIALS));
-        final String subject = jwtService.extractSubject(refreshToken);
+        Jwt jwt = decoder.decode(refreshToken);
+        String subject = jwt.getSubject();
         if (subject != null) {
             var user = userService.findByQuery(UserQuery.nameOf(subject))
                     .orElseThrow(UserNotFoundException::new);
-            var userDetails = new JwtUserDetails<>(user);
-            if (jwtService.isTokenValid(refreshToken, userDetails)) {
-                var token = jwtService.generateToken(userDetails);
-                return new UsernameLoginResponse(user.getName(), token, refreshToken);
+            if (user.isEnabled() && user.isAccountNonLocked() && user.isAccountNonExpired()
+                    && !Objects.requireNonNull(jwt.getExpiresAt()).isBefore(Instant.now())) {
+                Instant now = Instant.now();
+                // @formatter:off
+                String scope = user.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .collect(Collectors.joining(" "));
+                JwtClaimsSet claims = JwtClaimsSet.builder()
+                        .issuer(issuer)
+                        .issuedAt(now)
+                        .expiresAt(now.plus(expiration))
+                        .subject(user.getName())
+                        .claim("scope", scope)
+                        .build();
+                // @formatter:on
+                String accessToken = encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+                return new UsernameLoginResponse(user.getName(), accessToken, refreshToken);
             }
         }
         return null;

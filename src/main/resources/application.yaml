@@ -21,14 +21,14 @@ spring:
 server:
   port: 8800
 
-application:
-  security:
-    jwt:
-      issuer: ZornX5
-      secret-key: 404E635266556A586E327235753T782F413F4428472B4B6250645367566B5970
-      expiration: 5
-      refresh-token:
-        expiration: 30
+jwt:
+  private:
+    key: classpath:app.private.pkcs8.key
+  public:
+    key: classpath:app.public.pub
+  issuer: ZornX5
+  expiration: 5m
+  refresh-expiration: PT15M30S
 
 logging:
   level:
