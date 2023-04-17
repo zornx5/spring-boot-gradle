@@ -48,9 +48,9 @@ public record UserInfoResponse<U extends User<U, PK>, PK extends Serializable>(
         String address,
         UserStatus status,
         Integer loginFailedAttempts,
-        Optional<U> createdBy,
+        Optional<NamedResponse<PK>> createdBy,
         Optional<LocalDateTime> createdDate,
-        Optional<U> lastModifiedBy,
+        Optional<NamedResponse<PK>> lastModifiedBy,
         Optional<LocalDateTime> lastModifiedDate,
         Optional<LocalDateTime> expiredDate,
         Collection<Role<U, PK>> roles
@@ -70,9 +70,9 @@ public record UserInfoResponse<U extends User<U, PK>, PK extends Serializable>(
                 user.getAddress(),
                 user.getStatus(),
                 user.getLoginFailedAttempts(),
-                user.getCreatedBy(),
+                user.getCreatedBy().map(NamedResponse::of),
                 user.getCreatedDate(),
-                user.getLastModifiedBy(),
+                user.getLastModifiedBy().map(NamedResponse::of),
                 user.getLastModifiedDate(),
                 user.getExpiredDate(),
                 user.getRoles()

@@ -49,7 +49,7 @@ public class RoleRestResource<U extends User<U, PK>, PK extends Serializable> im
 
     @Override
     @GetMapping("")
-    public Page<RoleResponse<U, PK>> page(
+    public Page<RoleResponse<PK>> page(
             @Valid RoleQuery query,
             @PageableDefault(size = 15) Pageable pageable) {
         return new RoleResponseAssembler<U, PK>().of(roleService.findAll(null, pageable));
@@ -57,20 +57,20 @@ public class RoleRestResource<U extends User<U, PK>, PK extends Serializable> im
 
     @Override
     @GetMapping("/{id}")
-    public Optional<RoleResponse<U, PK>> get(@PathVariable Long id) {
+    public Optional<RoleResponse<PK>> get(@PathVariable Long id) {
         return roleService.findById((PK) id).map(RoleResponse::of);
     }
 
     @Override
     @PostMapping("")
-    public RoleResponse<U, PK> register(@RequestBody @Valid RoleRegistrationRequest<U, PK> request) {
+    public RoleResponse<PK> register(@RequestBody @Valid RoleRegistrationRequest<U, PK> request) {
         return RoleResponse.of(roleService.save(request.assignTo(roleService.create(), resourceService)));
     }
 
     @Override
     @PatchMapping("/{id}")
-    public RoleResponse<U, PK> update(@PathVariable Long id,
-                                      @RequestBody @Valid RoleUpdateRequest<U, PK> request) {
+    public RoleResponse<PK> update(@PathVariable Long id,
+                                   @RequestBody @Valid RoleUpdateRequest<U, PK> request) {
         return RoleResponse.of(roleService.update(request.assignTo(roleService.findById((PK) id)
                 .orElseThrow(() -> new RoleNotFoundException("不存在要更新的角色 " + id)), resourceService)));
     }

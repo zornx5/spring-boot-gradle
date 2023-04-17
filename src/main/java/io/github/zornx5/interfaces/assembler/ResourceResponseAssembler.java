@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * @author zornx5
  */
 public class ResourceResponseAssembler<U extends User<U, PK>, PK extends Serializable> {
-    public Page<ResourceResponse<U, PK>> of(Page<Resource<U, PK>> resources) {
+    public Page<ResourceResponse<PK>> of(Page<Resource<U, PK>> resources) {
         return new PageImpl<>(CollectionUtils.emptyIfNull(resources.getContent()).stream()
                 .map(ResourceResponse::of)
                 .collect(Collectors.toList()), resources.getPageable(), resources.getTotalElements());

@@ -45,7 +45,7 @@ public class ResourceRestResource<U extends User<U, PK>, PK extends Serializable
 
     @Override
     @GetMapping("")
-    public Page<ResourceResponse<U, PK>> page(
+    public Page<ResourceResponse<PK>> page(
             @Valid ResourceQuery query,
             @PageableDefault(size = 15) Pageable pageable) {
         return new ResourceResponseAssembler<U, PK>().of(resourceService.findAll(query, pageable));
@@ -53,20 +53,20 @@ public class ResourceRestResource<U extends User<U, PK>, PK extends Serializable
 
     @Override
     @GetMapping("/{id}")
-    public Optional<ResourceResponse<U, PK>> get(@PathVariable Long id) {
+    public Optional<ResourceResponse<PK>> get(@PathVariable Long id) {
         return resourceService.findById((PK) id).map(ResourceResponse::of);
     }
 
     @Override
     @PostMapping("")
-    public ResourceResponse<U, PK> register(@RequestBody @Valid ResourceRegistrationRequest<U, PK> request) {
+    public ResourceResponse<PK> register(@RequestBody @Valid ResourceRegistrationRequest<U, PK> request) {
         return ResourceResponse.of(resourceService.save(request.assignTo(resourceService.create(), resourceService)));
     }
 
     @Override
     @PatchMapping("/{id}")
-    public ResourceResponse<U, PK> update(@PathVariable Long id,
-                                          @RequestBody @Valid ResourceUpdateRequest<U, PK> request) {
+    public ResourceResponse<PK> update(@PathVariable Long id,
+                                       @RequestBody @Valid ResourceUpdateRequest<U, PK> request) {
         return ResourceResponse.of(resourceService.update(request.assignTo(resourceService.findById((PK) id)
                 .orElseThrow(() -> new ResourceNotFoundException("不存在要更新的资源 " + id)), resourceService)));
     }

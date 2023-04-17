@@ -24,7 +24,7 @@ public interface ResourceApi<U extends User<U, PK>, PK extends Serializable> {
      * @param pageable 分页对象
      * @return 符合条件的资源列表集合
      */
-    Page<ResourceResponse<U, PK>> page(ResourceQuery query, Pageable pageable);
+    Page<ResourceResponse<PK>> page(ResourceQuery query, Pageable pageable);
 
     /**
      * 获取资源
@@ -32,7 +32,7 @@ public interface ResourceApi<U extends User<U, PK>, PK extends Serializable> {
      * @param id 资源唯一标识
      * @return 符合条件的资源
      */
-    Optional<ResourceResponse<U, PK>> get(Long id);
+    Optional<ResourceResponse<PK>> get(Long id);
 
     /**
      * 注册资源
@@ -40,7 +40,7 @@ public interface ResourceApi<U extends User<U, PK>, PK extends Serializable> {
      * @param request 资源注册请求
      * @return 注册的资源
      */
-    ResourceResponse<U, PK> register(ResourceRegistrationRequest<U, PK> request);
+    ResourceResponse<PK> register(ResourceRegistrationRequest<U, PK> request);
 
     /**
      * 更新资源
@@ -48,7 +48,7 @@ public interface ResourceApi<U extends User<U, PK>, PK extends Serializable> {
      * @param request 更新资源请求
      * @return 更新后的数据
      */
-    ResourceResponse<U, PK> update(Long id, ResourceUpdateRequest<U, PK> request);
+    ResourceResponse<PK> update(Long id, ResourceUpdateRequest<U, PK> request);
 
     /**
      * 删除资源

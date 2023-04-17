@@ -1,6 +1,5 @@
 package io.github.zornx5.interfaces.dto;
 
-import io.github.zornx5.domain.entity.Resource;
 import io.github.zornx5.domain.entity.Role;
 import io.github.zornx5.domain.entity.User;
 import org.apache.commons.collections4.CollectionUtils;
@@ -21,32 +20,31 @@ import java.util.stream.Collectors;
  * @param createdDate      创建日期
  * @param lastModifiedBy   最后修改人
  * @param lastModifiedDate 最后修改日期
- * @param <U>              用户
  * @param <PK>             主键
  * @author zornx5
  */
-public record RoleResponse<U extends User<U, PK>, PK extends Serializable>(
+public record RoleResponse<PK extends Serializable>(
         PK id,
         String name,
         String description,
-        Optional<U> createdBy,
+        Optional<NamedResponse<PK>> createdBy,
         Optional<LocalDateTime> createdDate,
-        Optional<U> lastModifiedBy,
+        Optional<NamedResponse<PK>> lastModifiedBy,
         Optional<LocalDateTime> lastModifiedDate,
-        Collection<PK> userIds,
-        Collection<PK> resourceIds
+        Collection<NamedResponse<PK>> users,
+        Collection<NamedResponse<PK>> resources
 ) {
-    public static <U extends User<U, PK>, PK extends Serializable> RoleResponse<U, PK> of(Role<U, PK> role) {
+    public static <U extends User<U, PK>, PK extends Serializable> RoleResponse<PK> of(Role<U, PK> role) {
         return new RoleResponse<>(
                 role.getId(),
                 role.getName(),
                 role.getDescription(),
-                role.getCreatedBy(),
+                role.getCreatedBy().map(NamedResponse::of),
                 role.getCreatedDate(),
-                role.getLastModifiedBy(),
+                role.getLastModifiedBy().map(NamedResponse::of),
                 role.getLastModifiedDate(),
-                CollectionUtils.emptyIfNull(role.getUsers()).stream().map(User::getId).collect(Collectors.toSet()),
-                CollectionUtils.emptyIfNull(role.getResources()).stream().map(Resource::getId).collect(Collectors.toSet())
+                CollectionUtils.emptyIfNull(role.getUsers()).stream().map(NamedResponse::of).collect(Collectors.toSet()),
+                CollectionUtils.emptyIfNull(role.getResources()).stream().map(NamedResponse::of).collect(Collectors.toSet())
         );
     }
 }

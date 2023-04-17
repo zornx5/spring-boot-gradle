@@ -24,7 +24,7 @@ public interface RoleApi<U extends User<U, PK>, PK extends Serializable> {
      * @param pageable 分页对象
      * @return 符合条件的角色列表集合
      */
-    Page<RoleResponse<U, PK>> page(RoleQuery query, Pageable pageable);
+    Page<RoleResponse<PK>> page(RoleQuery query, Pageable pageable);
 
     /**
      * 获取角色
@@ -32,7 +32,7 @@ public interface RoleApi<U extends User<U, PK>, PK extends Serializable> {
      * @param id 角色唯一标识
      * @return 符合条件的角色
      */
-    Optional<RoleResponse<U, PK>> get(Long id);
+    Optional<RoleResponse<PK>> get(Long id);
 
     /**
      * 注册角色
@@ -40,7 +40,7 @@ public interface RoleApi<U extends User<U, PK>, PK extends Serializable> {
      * @param request 角色注册请求
      * @return 注册的角色
      */
-    RoleResponse<U, PK> register(RoleRegistrationRequest<U, PK> request);
+    RoleResponse<PK> register(RoleRegistrationRequest<U, PK> request);
 
     /**
      * 更新角色
@@ -48,7 +48,7 @@ public interface RoleApi<U extends User<U, PK>, PK extends Serializable> {
      * @param request 更新角色请求
      * @return 更新后的数据
      */
-    RoleResponse<U, PK> update(Long id, RoleUpdateRequest<U, PK> request);
+    RoleResponse<PK> update(Long id, RoleUpdateRequest<U, PK> request);
 
     /**
      * 删除角色

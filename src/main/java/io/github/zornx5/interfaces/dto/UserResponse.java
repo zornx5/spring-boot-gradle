@@ -4,7 +4,6 @@ import io.github.zornx5.domain.entity.User;
 import io.github.zornx5.infrastructure.common.enums.UserGender;
 import io.github.zornx5.infrastructure.common.enums.UserStatus;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.data.domain.Persistable;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -32,11 +31,10 @@ import java.util.stream.Collectors;
  * @param createdDate         创建日期
  * @param lastModifiedBy      最后修改人
  * @param lastModifiedDate    最后修改日期
- * @param <U>                 用户
  * @param <PK>                主键
  * @author zornx5
  */
-public record UserResponse<U extends User<U, PK>, PK extends Serializable>(
+public record UserResponse<PK extends Serializable>(
         PK id,
         String username,
         String description,
@@ -50,14 +48,14 @@ public record UserResponse<U extends User<U, PK>, PK extends Serializable>(
         String address,
         UserStatus status,
         Integer loginFailedAttempts,
-        Optional<U> createdBy,
+        Optional<NamedResponse<PK>> createdBy,
         Optional<LocalDateTime> createdDate,
-        Optional<U> lastModifiedBy,
+        Optional<NamedResponse<PK>> lastModifiedBy,
         Optional<LocalDateTime> lastModifiedDate,
         Optional<LocalDateTime> expiredDate,
-        Collection<PK> roleIds
+        Collection<NamedResponse<PK>> roles
 ) {
-    public static <U extends User<U, PK>, PK extends Serializable> UserResponse<U, PK> of(User<U, PK> user) {
+    public static <U extends User<U, PK>, PK extends Serializable> UserResponse<PK> of(User<U, PK> user) {
         return new UserResponse<>(
                 user.getId(),
                 user.getName(),
@@ -72,12 +70,12 @@ public record UserResponse<U extends User<U, PK>, PK extends Serializable>(
                 user.getAddress(),
                 user.getStatus(),
                 user.getLoginFailedAttempts(),
-                user.getCreatedBy(),
+                user.getCreatedBy().map(NamedResponse::of),
                 user.getCreatedDate(),
-                user.getLastModifiedBy(),
+                user.getLastModifiedBy().map(NamedResponse::of),
                 user.getLastModifiedDate(),
                 user.getExpiredDate(),
-                CollectionUtils.emptyIfNull(user.getRoles()).stream().map(Persistable::getId).collect(Collectors.toSet())
+                CollectionUtils.emptyIfNull(user.getRoles()).stream().map(NamedResponse::of).collect(Collectors.toSet())
         );
     }
 }

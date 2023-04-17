@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  */
 public class RoleResponseAssembler<U extends User<U, PK>, PK extends Serializable> {
 
-    public Page<RoleResponse<U, PK>> of(Page<Role<U, PK>> roles) {
+    public Page<RoleResponse<PK>> of(Page<Role<U, PK>> roles) {
         return new PageImpl<>(CollectionUtils.emptyIfNull(roles.getContent()).stream()
                 .map(RoleResponse::of)
                 .collect(Collectors.toList()), roles.getPageable(), roles.getTotalElements());

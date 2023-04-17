@@ -1,7 +1,6 @@
 package io.github.zornx5.interfaces.dto;
 
 import io.github.zornx5.domain.entity.Resource;
-import io.github.zornx5.domain.entity.Role;
 import io.github.zornx5.domain.entity.User;
 import io.github.zornx5.infrastructure.common.enums.ResourceType;
 import org.apache.commons.collections4.CollectionUtils;
@@ -26,11 +25,10 @@ import java.util.stream.Collectors;
  * @param createdDate      创建日期
  * @param lastModifiedBy   最后修改人
  * @param lastModifiedDate 最后修改日期
- * @param <U>              用户
  * @param <PK>             主键
  * @author zornx5
  */
-public record ResourceResponse<U extends User<U, PK>, PK extends Serializable>(
+public record ResourceResponse<PK extends Serializable>(
         PK id,
         String name,
         String description,
@@ -38,15 +36,15 @@ public record ResourceResponse<U extends User<U, PK>, PK extends Serializable>(
         String permission,
         String icon,
         String url,
-        Optional<U> createdBy,
+        Optional<NamedResponse<PK>> createdBy,
         Optional<LocalDateTime> createdDate,
-        Optional<U> lastModifiedBy,
+        Optional<NamedResponse<PK>> lastModifiedBy,
         Optional<LocalDateTime> lastModifiedDate,
-        Collection<PK> roleIds,
-        Optional<PK> parentId,
-        Collection<PK> childrenIds
+        Collection<NamedResponse<PK>> roles,
+        Optional<NamedResponse<PK>> parent,
+        Collection<NamedResponse<PK>> children
 ) {
-    public static <U extends User<U, PK>, PK extends Serializable> ResourceResponse<U, PK> of(Resource<U, PK> resource) {
+    public static <U extends User<U, PK>, PK extends Serializable> ResourceResponse<PK> of(Resource<U, PK> resource) {
         return new ResourceResponse<>(
                 resource.getId(),
                 resource.getName(),
@@ -55,13 +53,13 @@ public record ResourceResponse<U extends User<U, PK>, PK extends Serializable>(
                 resource.getPermission(),
                 resource.getIcon(),
                 resource.getUrl(),
-                resource.getCreatedBy(),
+                resource.getCreatedBy().map(NamedResponse::of),
                 resource.getCreatedDate(),
-                resource.getLastModifiedBy(),
+                resource.getLastModifiedBy().map(NamedResponse::of),
                 resource.getLastModifiedDate(),
-                CollectionUtils.emptyIfNull(resource.getRoles()).stream().map(Role::getId).collect(Collectors.toSet()),
-                resource.getParent() == null ? null : Optional.ofNullable(resource.getParent().getId()),
-                CollectionUtils.emptyIfNull(resource.getChildren()).stream().map(Resource::getId).collect(Collectors.toSet())
+                CollectionUtils.emptyIfNull(resource.getRoles()).stream().map(NamedResponse::of).collect(Collectors.toSet()),
+                Optional.ofNullable(resource.getParent()).map(NamedResponse::of),
+                CollectionUtils.emptyIfNull(resource.getChildren()).stream().map(NamedResponse::of).collect(Collectors.toSet())
         );
     }
 }
