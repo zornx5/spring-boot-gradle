@@ -2,9 +2,14 @@ package io.github.zornx5.infrastructure.aspectj;
 
 import io.github.zornx5.domain.entity.AbstractAuditable;
 import io.github.zornx5.domain.entity.User;
-import io.github.zornx5.domain.service.UserService;
+import io.github.zornx5.infrastructure.common.Content;
+import io.github.zornx5.infrastructure.common.enums.UserGender;
+import io.github.zornx5.infrastructure.common.enums.UserStatus;
+import io.github.zornx5.infrastructure.common.exception.UserNotFoundException;
 import io.github.zornx5.infrastructure.repository.UserQuery;
+import io.github.zornx5.infrastructure.repository.UserRepository;
 import jakarta.annotation.Nullable;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
@@ -17,6 +22,7 @@ import org.springframework.stereotype.Component;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * 实体切面
@@ -41,7 +47,26 @@ import java.util.Objects;
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class EntityAspect<U extends User<U, PK>, PK extends Serializable> {
 
-    private final UserService<U, PK> userService;
+    private final UserRepository<U, PK> userRepository;
+
+    @PostConstruct
+    public void init() {
+        log.info("EntityAspect init");
+        var systemuser = userRepository.save(userRepository.create().toBuilder()
+                .name(Content.SYSTEM_USER)
+                .description("系统默认用户")
+                .firstName("username")
+                .lastName("system")
+                .email("system-user@zornx5.github.io")
+                .phone("00000000000")
+                .password(UUID.randomUUID().toString())
+                .status(UserStatus.NO_LOGIN)
+                .gender(UserGender.UNKNOWN)
+                .expiredTime(LocalDateTime.now())
+                .roles(null)
+                .build());
+        log.info("created system default user: {}", systemuser);
+    }
 
     /**
      * 更新方法切面处理
@@ -87,9 +112,11 @@ public class EntityAspect<U extends User<U, PK>, PK extends Serializable> {
     private User<U, PK> getUser() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         if (Objects.isNull(authentication) || Strings.isBlank(authentication.getName())) {
-            return null;
+            return userRepository.findByQuery(UserQuery.nameOf(Content.SYSTEM_USER))
+                    .orElseThrow(() -> new UserNotFoundException("system default user not found"));
         }
-        return userService.findByQuery(UserQuery.nameOf(authentication.getName())).orElse(null);
+        return userRepository.findByQuery(UserQuery.nameOf(authentication.getName()))
+                .orElseThrow(() -> new UserNotFoundException(authentication.getName()));
     }
 
 }
