@@ -1,14 +1,18 @@
 package io.github.zornx5.interfaces.dto;
 
+import io.github.zornx5.domain.entity.Resource;
 import io.github.zornx5.domain.entity.Role;
 import io.github.zornx5.domain.entity.User;
+import io.github.zornx5.infrastructure.common.enums.ResourceType;
 import io.github.zornx5.infrastructure.common.enums.UserGender;
 import io.github.zornx5.infrastructure.common.enums.UserStatus;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 用户响应
@@ -53,8 +57,9 @@ public record UserInfoResponse<U extends User<U, PK>, PK extends Serializable>(
         Optional<NamedResponse<PK>> lastModifiedBy,
         Optional<LocalDateTime> lastModifiedDate,
         Optional<LocalDateTime> expiredDate,
-        Collection<Role<U, PK>> roles
+        Collection<RoleInfo<PK>> roles
 ) {
+
     public static <U extends User<U, PK>, PK extends Serializable> UserInfoResponse<U, PK> of(User<U, PK> user) {
         return new UserInfoResponse<>(
                 user.getId(),
@@ -75,7 +80,45 @@ public record UserInfoResponse<U extends User<U, PK>, PK extends Serializable>(
                 user.getLastModifiedBy().map(NamedResponse::of),
                 user.getLastModifiedDate(),
                 user.getExpiredDate(),
-                user.getRoles()
+                CollectionUtils.emptyIfNull(user.getRoles()).stream().map(RoleInfo::of).collect(Collectors.toSet())
         );
+    }
+
+    record RoleInfo<PK extends Serializable>(
+            PK id,
+            String name,
+            String description,
+            Collection<ResourceInfo<PK>> resources
+    ) {
+        public static <U extends User<U, PK>, PK extends Serializable> RoleInfo<PK> of(Role<U, PK> role) {
+            return new RoleInfo<>(
+                    role.getId(),
+                    role.getName(),
+                    role.getDescription(),
+                    CollectionUtils.emptyIfNull(role.getResources()).stream().map(ResourceInfo::of).collect(Collectors.toSet())
+            );
+        }
+    }
+
+    record ResourceInfo<PK extends Serializable>(
+            PK id,
+            String name,
+            ResourceType type,
+            String permission,
+            String icon,
+            String url,
+            Collection<ResourceInfo<PK>> children
+    ) {
+        public static <U extends User<U, PK>, PK extends Serializable> ResourceInfo<PK> of(Resource<U, PK> resource) {
+            return new ResourceInfo<>(
+                    resource.getId(),
+                    resource.getName(),
+                    resource.getType(),
+                    resource.getPermission(),
+                    resource.getIcon(),
+                    resource.getUrl(),
+                    CollectionUtils.emptyIfNull(resource.getChildren()).stream().map(ResourceInfo::of).collect(Collectors.toSet())
+            );
+        }
     }
 }
