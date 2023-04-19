@@ -56,7 +56,7 @@ public class AuthRestResource<U extends User<U, PK>, PK extends Serializable> im
     }
 
     @Override
-    @GetMapping("/details")
+    @GetMapping("/userinfo")
     public UserInfoResponse<U, PK> getUserInfo() {
         return authService.getUserInfo();
     }
